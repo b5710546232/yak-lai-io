@@ -31,7 +31,7 @@ export default class extends Phaser.State {
   }
   setEventHandlers() {
 
-    let target = 'http://158.108.137.87:3000'
+    let target = 'http://localhost:3000'
     this.socket = io.connect(target);
     this.socket.on('connect', () => {
       this.player = new Player({
