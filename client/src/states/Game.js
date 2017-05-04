@@ -6,6 +6,9 @@ import Enemy from '../prefabs/enemy'
 
 import io from 'socket.io-client'
 
+import Bullet from '../prefabs/bullet'
+import Pool from '../utils/pool'
+
 export default class extends Phaser.State {
 
   preload() {}
@@ -27,11 +30,21 @@ export default class extends Phaser.State {
 
     this.players = [];
 
+    this.initBullets();
+  }
 
+  initBullets() {
+    let entity_data = {
+      game: this.game,
+      x: 0,
+      y: 0
+    }
+    this.bulletPool = new Pool(this.game, Bullet, 2, entity_data)
+    this.game.add.existing(this.bulletPool)
   }
   setEventHandlers() {
 
-    let target = 'http://158.108.137.87:3000'
+    let target = 'http://localhost:3000'
     this.socket = io.connect(target);
     this.socket.on('connect', () => {
       this.player = new Player({
@@ -41,6 +54,8 @@ export default class extends Phaser.State {
         asset: 'player',
         socket: this.socket
       })
+
+      this.player.setBulletPool(this.bulletPool);
       this.socket.emit('new_player', this.player.toJson());
 
       // new player
@@ -51,7 +66,7 @@ export default class extends Phaser.State {
           x: enemy.x,
           y: enemy.y,
           asset: 'player',
-          enemy_info:enemy
+          enemy_info: enemy
         })
       })
 

@@ -3,17 +3,19 @@ import Phaser from 'phaser'
 
 const PLAYER_SPEED = 100
 
+import Config from '../config.js'
+
 const CMD_ACTION = {
-    IDLE:'IDLE',
-    MOVE_LEFT:'MOVE_LEFT',
-    MOVE_UP:'MOVE_UP',
-    MOVE_DOWN:'MOVE_DOWN',
-    MOVE_RIGHT:'MOVE_RIGHT',
+    IDLE: 'IDLE',
+    MOVE_LEFT: 'MOVE_LEFT',
+    MOVE_UP: 'MOVE_UP',
+    MOVE_DOWN: 'MOVE_DOWN',
+    MOVE_RIGHT: 'MOVE_RIGHT',
 }
 
 export default class Player extends Phaser.Sprite {
 
-    
+
     constructor({
         game,
         x,
@@ -38,6 +40,13 @@ export default class Player extends Phaser.Sprite {
         this.setup()
         this.initInput()
 
+        this.SHOT_DELAY = 300
+        this.NUMBER_OF_BULLETS = 20
+
+
+    }
+    setBulletPool(pool) {
+        this.bulletPool = pool;
 
     }
     create() {
@@ -96,7 +105,7 @@ export default class Player extends Phaser.Sprite {
             y: this.y,
             height: this.height,
             width: this.width,
-            anim_action:this.anim_action 
+            anim_action: this.anim_action
         };
     }
 
@@ -142,9 +151,46 @@ export default class Player extends Phaser.Sprite {
         })
     }
 
+    shoot() {
+
+        if (this.lastBulletShotAt === undefined) this.lastBulletShotAt = 0
+        if (this.game.time.now - this.lastBulletShotAt < this.SHOT_DELAY) return
+        this.lastBulletShotAt = this.game.time.now
+
+        let bullet = this.bulletPool.init(this.position.x, this.position.y)
+        if (bullet === null || bullet === undefined) return
+        bullet.fire(this.gunAngle)
+        console.log('shoot');
+    }
+
+    // fire(bullets) {
+    //     if (this.game.time.now > this.nextFire && bullets.countDead() > 0) {
+    //         nextFire = game.time.now + fireRate;
+
+
+    //         bullet.reset(sprite.x - 8, sprite.y - 8);
+
+    //         this.game.physics.arcade.moveToPointer(bullet, 300);
+    //     }
+
+    // }
+
     update() {
+        console.log(this.game.input.activePointer.position.x);
+
+        // if(this.game.input.mousePointer.x > Config.gameWidth){
+        //     console.log('1');
+        // }else{
+        //     console.log('-1');
+        // }
         this.handleInput()
+
+        if (game.input.activePointer.isDown) {
+            this.shoot()
+            console.log('shoot');
+        }
         this.socket.emit('move_player', this.toJson());
+
 
     }
 
