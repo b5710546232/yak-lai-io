@@ -65,6 +65,7 @@ export default class Player extends Phaser.Sprite {
         this.animations.play("run");
         this.anim_action = 'run'
         this.current_cmd_action = CMD_ACTION.MOVE_LEFT
+        this.scale.x = -1
     }
 
     idle() {
@@ -80,7 +81,7 @@ export default class Player extends Phaser.Sprite {
         this.animations.play("run");
         this.anim_action = 'run'
         this.current_cmd_action = CMD_ACTION.MOVE_RIGHT
-
+        this.scale.x = 1
     }
     moveUp() {
         this.body.velocity.y = -PLAYER_SPEED;
@@ -176,7 +177,7 @@ export default class Player extends Phaser.Sprite {
     // }
 
     update() {
-        console.log(this.game.input.activePointer.position.x);
+        
 
         // if(this.game.input.mousePointer.x > Config.gameWidth){
         //     console.log('1');

@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 
-const BULLET_SPEED = 250
+const BULLET_SPEED = 300
 const LIFE_TIME = 1000
 
 export default class Bullet extends Phaser.Sprite {
