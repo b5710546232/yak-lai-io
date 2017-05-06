@@ -147,6 +147,7 @@ export default class Player extends Phaser.Sprite {
         this.downButton = this.game.input.keyboard.addKey(Phaser.Keyboard.S)
         this.rightButton = this.game.input.keyboard.addKey(Phaser.Keyboard.D)
         this.upButton = this.game.input.keyboard.addKey(Phaser.Keyboard.W)
+
         this.game.input.keyboard.addCallbacks(this, null, null, (keycode) => {
             console.log('key : ', keycode)
         })
@@ -160,8 +161,12 @@ export default class Player extends Phaser.Sprite {
 
         let bullet = this.bulletPool.init(this.position.x, this.position.y)
         if (bullet === null || bullet === undefined) return
-        bullet.fire(this.gunAngle)
-        console.log('shoot');
+
+        bullet.setPlayerId(this.id)
+        bullet.fire()
+        // console.log('bullet',bullet.toJson());
+        this.socket.emit('shoot', bullet.toJson());
+
     }
 
     // fire(bullets) {
@@ -177,20 +182,13 @@ export default class Player extends Phaser.Sprite {
     // }
 
     update() {
-        
 
-        // if(this.game.input.mousePointer.x > Config.gameWidth){
-        //     console.log('1');
-        // }else{
-        //     console.log('-1');
-        // }
+        this.socket.emit('move_player', this.toJson());
         this.handleInput()
-
         if (game.input.activePointer.isDown) {
             this.shoot()
-            console.log('shoot');
+
         }
-        this.socket.emit('move_player', this.toJson());
 
 
     }

@@ -1,12 +1,12 @@
 import Phaser from 'phaser'
-import WebFont from 'webfontloader'
+// import WebFont from 'webfontloader'
 
 export default class extends Phaser.State {
   init(param) {
     // console.log('boot-parm',param);
     this.stage.backgroundColor = '#EDEEC9'
-    this.fontsReady = false
-    this.fontsLoaded = this.fontsLoaded.bind(this)
+    // this.fontsReady = false
+    // this.fontsLoaded = this.fontsLoaded.bind(this)
 
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
@@ -22,12 +22,12 @@ export default class extends Phaser.State {
   }
 
   preload() {
-    WebFont.load({
-      google: {
-        families: ['Bangers']
-      },
-      active: this.fontsLoaded
-    })
+    // WebFont.load({
+    //   google: {
+    //     families: ['Bangers']
+    //   },
+    //   active: this.fontsLoaded
+    // })
 
     let text = this.add.text(this.world.centerX, this.world.centerY, 'loading fonts', {
       font: '16px Arial',
@@ -41,9 +41,9 @@ export default class extends Phaser.State {
   }
 
   render() {
-    if (this.fontsReady) {
+    // if (this.fontsReady) {
       this.state.start('Splash')
-    }
+    // }
   }
 
   fontsLoaded() {

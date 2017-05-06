@@ -14,7 +14,7 @@ export default class extends Phaser.State {
   preload() {}
 
   create() {
-    const bannerText = 'yak-lai-io'
+    const bannerText = 'yak-lai'
     let banner = this.add.text(this.world.centerX, this.game.height - 80, bannerText)
     banner.font = 'Bangers'
     banner.padding.set(10, 16)
@@ -68,15 +68,23 @@ export default class extends Phaser.State {
           asset: 'player',
           enemy_info: enemy
         })
+        this.players[enemy.id].setBulletPool(this.bulletPool);
       })
-
-
       // Player
       this.socket.on('move_player', (enemy) => {
         if (this.players[enemy.id]) {
           this.players[enemy.id].move(enemy);
         }
       });
+
+
+        this.socket.on('shoot', (enemy) => {
+        if (this.players[enemy.id]) {
+          // console.log('shoot-enemy',enemy);
+          this.players[enemy.id].shootTo(enemy.end_x,enemy.end_y)
+        }
+      });
+
 
       // logout
       this.socket.on('logout', (id) => {

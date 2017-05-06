@@ -3,13 +3,6 @@ import Phaser from 'phaser'
 
 const PLAYER_SPEED = 100
 
-const CMD_ACTION = {
-    IDLE: 'IDLE',
-    MOVE_LEFT: 'MOVE_LEFT',
-    MOVE_UP: 'MOVE_UP',
-    MOVE_DOWN: 'MOVE_DOWN',
-    MOVE_RIGHT: 'MOVE_RIGHT',
-}
 export default class Enemy extends Phaser.Sprite {
     constructor({
         game,
@@ -30,6 +23,8 @@ export default class Enemy extends Phaser.Sprite {
         this.setup()
         this.anim_action = 'idle'
 
+        this.SHOT_DELAY = 300
+        this.NUMBER_OF_BULLETS = 20
 
     }
     create() {
@@ -51,6 +46,10 @@ export default class Enemy extends Phaser.Sprite {
         this.width = this.enemy_info.width;
         this.height = this.enemy_info.height;
 
+
+    }
+    setBulletPool(pool) {
+        this.bulletPool = pool;
 
     }
     moveLeft() {
@@ -75,6 +74,15 @@ export default class Enemy extends Phaser.Sprite {
     moveDown() {
         this.body.velocity.y = PLAYER_SPEED;
 
+    }
+    shootTo(x, y) {
+        if (this.lastBulletShotAt === undefined) this.lastBulletShotAt = 0
+        if (this.game.time.now - this.lastBulletShotAt < this.SHOT_DELAY) return
+        this.lastBulletShotAt = this.game.time.now
+
+        let bullet = this.bulletPool.init(this.position.x, this.position.y)
+        if (bullet === null || bullet === undefined) return
+        bullet.fireTo(x, y)
     }
     toJson() {
         return {
@@ -106,31 +114,12 @@ export default class Enemy extends Phaser.Sprite {
         this.height = enemy_info.height;
         this.position.x = enemy_info.x
         this.position.y = enemy_info.y
-        if(enemy_info.anim_action != this.anim_action){
+        if (enemy_info.anim_action != this.anim_action) {
             this.anim_action = enemy_info.anim_action
-            this.animations.play(enemy_info.anim_action,true)
+            this.animations.play(enemy_info.anim_action)
         }
-        
-        // switch (enemy_info.cmd_action) {
-        //     case CMD_ACTION.IDLE:
-        //         this.idle();
-        //         break;
-        //     case CMD_ACTION.MOVE_LEFT:
-        //         this.moveLeft();
-        //         break;
-        //     case CMD_ACTION.MOVE_RIGHT:
-        //         this.moveRight();
-        //         break;
-        //     case CMD_ACTION.MOVE_UP:
-        //         this.moveUp();
-        //         break;
-        //     case CMD_ACTION.MOVE_DOWN:
-        //         this.moveDown();
-        //         break;
-        //     // default:
-        //         // this.idle();
 
-        // }
+
 
     }
 

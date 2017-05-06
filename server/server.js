@@ -28,7 +28,7 @@ io.on('connection', function (socket) {
 
     socket.on('new_player', function (user) {
         me = user;
-        
+
         socket.emit('getParticules', particules);
 
         for (var k in users) {
@@ -36,7 +36,7 @@ io.on('connection', function (socket) {
         }
 
         users[me.id] = me;
-        console.log('user-id',me.id);
+        console.log('user-id', me.id);
         socket.broadcast.emit('new_player', user);
     });
 
@@ -54,6 +54,11 @@ io.on('connection', function (socket) {
     socket.on('move_player', function (user) {
         users[me.id] = user;
         socket.broadcast.emit('move_player', user);
+    });
+
+    socket.on('shoot', function (user) {
+        users[me.id] = user;
+        socket.broadcast.emit('shoot', user);
     });
 
     socket.on('kill_player', function (enemy) {
