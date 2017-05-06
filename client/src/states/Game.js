@@ -24,11 +24,19 @@ export default class extends Phaser.State {
     banner.anchor.setTo(0.5)
 
     this.setEventHandlers();
+    this.game.add.e
+    this.t_bullet = new Bullet({
+      game: this,
+      x: 30,
+      y: 30
+    });
+    this.game.add.existing(this.t_bullet);
 
     // for show fps
     this.game.time.advancedTiming = true;
 
     this.players = [];
+    this.enemyGroup = this.game.add.group()
 
     this.initBullets();
   }
@@ -40,7 +48,6 @@ export default class extends Phaser.State {
       y: 0
     }
     this.bulletPool = new Pool(this.game, Bullet, 2, entity_data)
-    this.game.add.existing(this.bulletPool)
   }
   setEventHandlers() {
 
@@ -55,12 +62,13 @@ export default class extends Phaser.State {
         socket: this.socket
       })
 
+
       this.player.setBulletPool(this.bulletPool);
       this.socket.emit('new_player', this.player.toJson());
 
       // new player
       this.socket.on('new_player', (enemy) => {
-        console.log('new-player', enemy);
+        // console.log('new-player', enemy);
         this.players[enemy.id] = new Enemy({
           game: this.game,
           x: enemy.x,
@@ -68,6 +76,7 @@ export default class extends Phaser.State {
           asset: 'player',
           enemy_info: enemy
         })
+        this.enemyGroup.add(this.players[enemy.id])
         this.players[enemy.id].setBulletPool(this.bulletPool);
       })
       // Player
@@ -78,10 +87,23 @@ export default class extends Phaser.State {
       });
 
 
-        this.socket.on('shoot', (enemy) => {
+      this.socket.on('shoot', (enemy) => {
         if (this.players[enemy.id]) {
           // console.log('shoot-enemy',enemy);
-          this.players[enemy.id].shootTo(enemy.end_x,enemy.end_y)
+          this.players[enemy.id].shootTo(enemy.end_x, enemy.end_y)
+        }
+      });
+
+
+      this.socket.on('kill_player', (data) => {
+        console.log(this.player.id, data.enemy_id);
+        if (this.players[data.enemy_id]) {
+          this.players[data.enemy_id].isAlive = false;
+          this.players[data.enemy_id].x = 0;
+          this.players[data.enemy_id].y = 0;
+        }
+        else if (this.player.id == data.enemy_id) {
+          this.player.isAlive = false;
         }
       });
 
@@ -102,11 +124,65 @@ export default class extends Phaser.State {
     if (__DEV__) {
       // this.game.debug.spriteInfo(this.player, 32, 32)
       this.game.debug.text('fps: ' + this.game.time.fps || '--', 32, 140);
+      if (this.player) {
+        this.game.debug.body(this.player);
+      }
+      if (this.enemyGroup) {
+        for (let i in this.players) {
+          this.game.debug.body(this.players[i]);
+        }
+      }
+      this.game.debug.body(this.t_bullet)
+
     }
+
   }
 
 
 
 
-  update() {}
+  update() {
+// bullet -> enemy
+    this.game.physics.arcade.overlap(this.enemyGroup, this.bulletPool, (enemy, bullet) => {
+      // bullet.kill()
+      if (bullet.player_id != enemy.id && enemy.isAlive) {
+
+        var data = {
+          id: this.player.id,
+          enemy_id: enemy.id,
+          username: enemy.username,
+          shooter_id: bullet.player_id
+        };
+
+        // enemy.kill()
+        this.socket.emit('kill_player', data);
+        return;
+      }
+    }, null, this)
+
+// bullet -> player
+    this.game.physics.arcade.overlap(this.player, this.bulletPool, (player, bullet) => {
+      // bullet.kill()
+      if (bullet.player_id != player.id && player.isAlive) {
+
+        var data = {
+          id: this.player.id,
+          enemy_id: player.id,
+          username: player.username,
+          shooter_id: bullet.player_id
+        };
+        this.socket.emit('kill_player', data);
+        return;
+      }
+    }, null, this)
+
+  }
+
+  enemyBulletCollisionHandle(player, bullet) {
+
+    // bullet.kill()
+    // player.death()
+    // this.socket.emit('kill_player',);
+    // console.log('hit');
+  }
 }

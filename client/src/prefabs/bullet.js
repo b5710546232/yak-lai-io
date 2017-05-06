@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 
-const BULLET_SPEED = 300
+const BULLET_SPEED = 400
 const LIFE_TIME = 1000
 
 export default class Bullet extends Phaser.Sprite {
@@ -18,6 +18,7 @@ export default class Bullet extends Phaser.Sprite {
 
     setup() {
         this.game.physics.enable(this, Phaser.Physics.ARCADE)
+        this.body.setCircle(16)
         this.checkWorldBounds = true
         this.outOfBoundsKill = true
         this.outOfCameraBoundsKill = true
@@ -26,19 +27,10 @@ export default class Bullet extends Phaser.Sprite {
         this.scale.y = 2
     }
 
-    fire() {
-        // this.body.velocity.x = Math.cos(angle) * BULLET_SPEED
-        // this.body.velocity.y = Math.sin(angle) * BULLET_SPEED
-        this.game.physics.arcade.moveToPointer(this, BULLET_SPEED);
-        setTimeout(() => {
-            this.kill()
-        }, LIFE_TIME)
-    }
+   
     fireTo(x, y) {
-        this.game.physics.arcade.moveToXY(this, x, y,BULLET_SPEED);
-        setTimeout(() => {
-            this.kill()
-        }, LIFE_TIME)
+        this.game.physics.arcade.moveToXY(this, x, y, BULLET_SPEED, LIFE_TIME);
+       
     }
     setPlayerId(id) {
         this.player_id = id;
@@ -49,7 +41,7 @@ export default class Bullet extends Phaser.Sprite {
         let vec_x = (this.game.input.activePointer.x - this.x)
         let vec_y = (this.game.input.activePointer.y - this.y)
         return {
-            id:this.player_id,
+            id: this.player_id,
             start_x: this.x,
             start_y: this.y,
             end_x: this.game.input.activePointer.x,
@@ -62,6 +54,11 @@ export default class Bullet extends Phaser.Sprite {
 
     update() {
 
+    }
+
+
+    render() {
+        this.game.debug.body(this)
     }
 
 }

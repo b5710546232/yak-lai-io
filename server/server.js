@@ -61,9 +61,10 @@ io.on('connection', function (socket) {
         socket.broadcast.emit('shoot', user);
     });
 
-    socket.on('kill_player', function (enemy) {
-        delete users[enemy.id];
-        io.emit('kill_player', enemy);
+    socket.on('kill_player', function (user) {
+        users[me.id] = user;
+        socket.emit('kill_player', user);
+        
     });
 
     socket.on('disconnect', function () {

@@ -43,7 +43,17 @@ export default class Player extends Phaser.Sprite {
         this.SHOT_DELAY = 300
         this.NUMBER_OF_BULLETS = 20
 
+        this.isAlive = true;
 
+
+    }
+    death() {
+        this.x = Math.floor((Math.random() * 10) + 1)
+        this.y = Math.floor((Math.random() * 10) + 1)
+        this.isAlive = false;
+    }
+    rebirth() {
+        this.isAlive = true;
     }
     setBulletPool(pool) {
         this.bulletPool = pool;
@@ -56,7 +66,7 @@ export default class Player extends Phaser.Sprite {
     setup() {
 
         this.game.physics.enable(this, Phaser.Physics.ARCADE)
-        this.body.setCircle(16)
+        this.body.setSize(32, 48, 6, 0)
         this.body.collideWorldBounds = true
 
     }
@@ -162,8 +172,12 @@ export default class Player extends Phaser.Sprite {
         let bullet = this.bulletPool.init(this.position.x, this.position.y)
         if (bullet === null || bullet === undefined) return
 
+
         bullet.setPlayerId(this.id)
-        bullet.fire()
+        let x = this.game.input.activePointer.x 
+        // ((this.game.input.activePointer.x *this.game.input.activePointer.x) +(this.game.input.activePointer.y + this.game.input.activePointer.y))
+        let y = this.game.input.activePointer.y
+        bullet.fireTo(x,y)
         // console.log('bullet',bullet.toJson());
         this.socket.emit('shoot', bullet.toJson());
 
@@ -182,8 +196,15 @@ export default class Player extends Phaser.Sprite {
     // }
 
     update() {
-
-        this.socket.emit('move_player', this.toJson());
+        if (this.isAlive) {
+            this.socket.emit('move_player', this.toJson());
+        } else {
+            this.x = this.game.world.randomX;
+            this.y = this.game.world.randomY;
+            0;
+            this.socket.emit('move_player', this.toJson());
+            this.isAlive = true;
+        }
         this.handleInput()
         if (game.input.activePointer.isDown) {
             this.shoot()
@@ -192,6 +213,8 @@ export default class Player extends Phaser.Sprite {
 
 
     }
+
+
 
 
 

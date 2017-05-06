@@ -12,6 +12,7 @@ export default class Pool extends Phaser.Group {
                 obj.kill()
             }
         }
+        this.game.add.existing(this)
         return this
     }
 

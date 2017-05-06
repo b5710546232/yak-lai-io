@@ -18,6 +18,8 @@ export default class extends Phaser.State {
 
     //screen size will be set automatically
 
+    // 
+    this.game.stage.disableVisibilityChange = true;
 
   }
 

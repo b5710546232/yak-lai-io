@@ -30,11 +30,16 @@ export default class Enemy extends Phaser.Sprite {
     create() {
 
     }
+    death() {
+        this.x = Math.floor((Math.random() * 10) + 1)
+        this.y = Math.floor((Math.random() * 10) + 1)
+
+    }
 
     setup() {
 
         this.game.physics.enable(this, Phaser.Physics.ARCADE)
-        this.body.setCircle(16)
+        this.body.setSize(32, 48, 6, 0)
         this.body.collideWorldBounds = true
 
         this.id = this.enemy_info.id;
@@ -82,6 +87,7 @@ export default class Enemy extends Phaser.Sprite {
 
         let bullet = this.bulletPool.init(this.position.x, this.position.y)
         if (bullet === null || bullet === undefined) return
+        bullet.setPlayerId(this.id)
         bullet.fireTo(x, y)
     }
     toJson() {
@@ -97,11 +103,13 @@ export default class Enemy extends Phaser.Sprite {
             width: this.width
         };
     }
+     death(){
+        this.x = Math.floor((Math.random() * 10) + 1)
+        this.y = Math.floor((Math.random() * 10) + 1)
+        this.isAlive = false;
+    }
 
     move(enemy_info) {
-        if (!this.alive) {
-            this.kill();
-        }
         this.enemy_info = enemy_info
 
         this.id = enemy_info.id;
@@ -112,8 +120,8 @@ export default class Enemy extends Phaser.Sprite {
         this.speed = enemy_info.speed;
         this.width = enemy_info.width;
         this.height = enemy_info.height;
-        this.position.x = enemy_info.x
-        this.position.y = enemy_info.y
+        this.x = enemy_info.x
+        this.y = enemy_info.y
         if (enemy_info.anim_action != this.anim_action) {
             this.anim_action = enemy_info.anim_action
             this.animations.play(enemy_info.anim_action)
