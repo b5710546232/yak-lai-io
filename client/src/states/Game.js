@@ -24,13 +24,14 @@ export default class extends Phaser.State {
     banner.anchor.setTo(0.5)
 
     this.setEventHandlers();
-    this.game.add.e
-    this.t_bullet = new Bullet({
-      game: this,
-      x: 30,
-      y: 30
-    });
-    this.game.add.existing(this.t_bullet);
+
+    // this.t_bullet = new Bullet({
+    //   game: this,
+    //   x: 30,
+    //   y: 30
+    // });
+
+    // this.game.add.existing(this.t_bullet);
 
     // for show fps
     this.game.time.advancedTiming = true;
@@ -121,21 +122,21 @@ export default class extends Phaser.State {
   }
 
   render() {
-    if (__DEV__) {
-         this.game.debug.text('Active Bullets: ' + this.bulletPool.countLiving() + ' / ' + this.bulletPool.total, 32, 32);
-      // this.game.debug.spriteInfo(this.player, 32, 32)
-      this.game.debug.text('fps: ' + this.game.time.fps || '--', 32, 140);
-      if (this.player) {
-        this.game.debug.body(this.player);
-      }
-      if (this.enemyGroup) {
-        for (let i in this.players) {
-          this.game.debug.body(this.players[i]);
-        }
-      }
-      this.game.debug.body(this.t_bullet)
+    // if (__DEV__) {
+    //      this.game.debug.text('Active Bullets: ' + this.bulletPool.countLiving() + ' / ' + this.bulletPool.total, 32, 32);
+    //   // this.game.debug.spriteInfo(this.player, 32, 32)
+    //   this.game.debug.text('fps: ' + this.game.time.fps || '--', 32, 140);
+    //   if (this.player) {
+    //     this.game.debug.body(this.player);
+    //   }
+    //   if (this.enemyGroup) {
+    //     for (let i in this.players) {
+    //       this.game.debug.body(this.players[i]);
+    //     }
+    //   }
+    //   // this.game.debug.body(this.t_bullet)
 
-    }
+    // }
 
   }
 
@@ -145,7 +146,6 @@ export default class extends Phaser.State {
   update() {
 // bullet -> enemy
     this.game.physics.arcade.overlap(this.enemyGroup, this.bulletPool, (enemy, bullet) => {
-      // bullet.kill()
       if (bullet.player_id != enemy.id && enemy.isAlive) {
 
         var data = {
@@ -154,16 +154,13 @@ export default class extends Phaser.State {
           username: enemy.username,
           shooter_id: bullet.player_id
         };
-
-        // enemy.kill()
+        bullet.kill()
         this.socket.emit('kill_player', data);
-        return;
       }
     }, null, this)
 
 // bullet -> player
     this.game.physics.arcade.overlap(this.player, this.bulletPool, (player, bullet) => {
-      // bullet.kill()
       if (bullet.player_id != player.id && player.isAlive) {
 
         var data = {
@@ -172,8 +169,8 @@ export default class extends Phaser.State {
           username: player.username,
           shooter_id: bullet.player_id
         };
+        bullet.kill()
         this.socket.emit('kill_player', data);
-        return;
       }
     }, null, this)
 
