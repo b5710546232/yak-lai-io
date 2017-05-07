@@ -165,6 +165,7 @@ export default class Player extends Phaser.Sprite {
 
     shoot() {
 
+
         if (this.lastBulletShotAt === undefined) this.lastBulletShotAt = 0
         if (this.game.time.now - this.lastBulletShotAt < this.SHOT_DELAY) return
         this.lastBulletShotAt = this.game.time.now
@@ -173,6 +174,7 @@ export default class Player extends Phaser.Sprite {
         if (bullet === null || bullet === undefined) return
 
 
+        game.add.audio('throw_sfx').play();
         bullet.setPlayerId(this.id)
         let _x = this.game.input.activePointer.x 
         let _y = this.game.input.activePointer.y
@@ -203,6 +205,7 @@ export default class Player extends Phaser.Sprite {
         if (this.isAlive) {
             this.socket.emit('move_player', this.toJson());
         } else {
+            game.add.audio('dead_sfx').play();
             this.x = this.game.world.randomX;
             this.y = this.game.world.randomY;
             0;

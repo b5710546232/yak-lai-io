@@ -40,6 +40,12 @@ export default class extends Phaser.State {
     this.enemyGroup = this.game.add.group()
 
     this.initBullets();
+
+    let music = game.add.audio('soundtrack');
+    music.loop = true;
+    music.play();
+    music.volume = 0.1;
+
   }
 
   initBullets() {
