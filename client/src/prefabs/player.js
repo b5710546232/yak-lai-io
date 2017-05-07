@@ -174,9 +174,13 @@ export default class Player extends Phaser.Sprite {
 
 
         bullet.setPlayerId(this.id)
-        let x = this.game.input.activePointer.x 
-        // ((this.game.input.activePointer.x *this.game.input.activePointer.x) +(this.game.input.activePointer.y + this.game.input.activePointer.y))
-        let y = this.game.input.activePointer.y
+        let _x = this.game.input.activePointer.x 
+        let _y = this.game.input.activePointer.y
+        // let x = _x*100/Math.sqrt((_x*_x)+(_y*_y))
+        // let y = _y*100/Math.sqrt((_x*_x)+(_y*_y))
+        let x = _x
+        let y = _y
+        console.log('x,y',x,y);
         bullet.fireTo(x,y)
         // console.log('bullet',bullet.toJson());
         this.socket.emit('shoot', bullet.toJson());

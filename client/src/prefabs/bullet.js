@@ -29,8 +29,13 @@ export default class Bullet extends Phaser.Sprite {
 
    
     fireTo(x, y) {
-        this.game.physics.arcade.moveToXY(this, x, y, BULLET_SPEED, LIFE_TIME);
+        this.game.physics.arcade.moveToXY(this, x, y, BULLET_SPEED);
+        this.game.time.events.add(Phaser.Timer.SECOND * 1, this.resetBullet, this);
+        // this.lifespan = 1000;
        
+    }
+    resetBullet(){
+        this.kill()
     }
     setPlayerId(id) {
         this.player_id = id;

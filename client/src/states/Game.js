@@ -122,6 +122,7 @@ export default class extends Phaser.State {
 
   render() {
     if (__DEV__) {
+         this.game.debug.text('Active Bullets: ' + this.bulletPool.countLiving() + ' / ' + this.bulletPool.total, 32, 32);
       // this.game.debug.spriteInfo(this.player, 32, 32)
       this.game.debug.text('fps: ' + this.game.time.fps || '--', 32, 140);
       if (this.player) {
