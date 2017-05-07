@@ -2,3 +2,4 @@
 /dist
 *.VC.opendb
 *.VC.db
+/vs
