@@ -6,12 +6,13 @@
 html,
 body {
   background-color: #000;
-  overflow: hidden;
+
 }
 
 canvas {
   margin: 0 auto;
 }
+
 
 #content canvas {
   image-rendering: optimizeSpeed;

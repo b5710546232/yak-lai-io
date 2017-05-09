@@ -20,6 +20,7 @@ export default class Pool extends Phaser.Group {
         // create obj pool
         let obj = this.getFirstDead()
         if (!obj) {
+            console.log('hi-createinpuool')
             obj = new this.entityType(this.entityData)
             this.add(obj, true)
         }
