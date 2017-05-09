@@ -23,8 +23,17 @@ export default class Enemy extends Phaser.Sprite {
         this.setup()
         this.anim_action = 'idle'
 
-        this.SHOT_DELAY = 300
+        this.SHOT_DELAY = 750
         this.NUMBER_OF_BULLETS = 20
+
+        this.arms = this.game.make.sprite(0, 0, 'yak_arm')
+        this.arms.anchor.setTo(0.5)
+
+        this.arms.animations.add("attack", [0, 1, 2, 3, 4,5], 16,false,true);
+        this.arms.animations.add("idle", [5], 1);
+        this.arms.animations.play("idle");
+        this.addChild(this.arms);
+
 
     }
     create() {
@@ -89,6 +98,7 @@ export default class Enemy extends Phaser.Sprite {
         if (bullet === null || bullet === undefined) return
         bullet.setPlayerId(this.id)
         bullet.fireTo(x, y)
+        this.arms.animations.play("attack");
     }
     toJson() {
         return {

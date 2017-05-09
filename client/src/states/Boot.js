@@ -11,10 +11,7 @@ export default class extends Phaser.State {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
     //have the game centered horizontally
-
     this.scale.pageAlignHorizontally = true;
-
-    this.scale.pageAlignVertically = true;
 
     //screen size will be set automatically
 

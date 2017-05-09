@@ -24,7 +24,11 @@ export default class Player extends Phaser.Sprite {
         socket
     }) {
         super(game, x, y, asset)
-        // this.game.add.sprite(x, y,this);
+
+
+        //for pixel art
+         this.smoothed = false;
+
         this.game.add.existing(this);
         // this.animations.play("down", 4, true);
         this.animations.add("idle", [0, 1, 2, 3, 4], 12, true);
@@ -40,11 +44,23 @@ export default class Player extends Phaser.Sprite {
         this.setup()
         this.initInput()
 
-        this.SHOT_DELAY = 300
+        this.SHOT_DELAY = 750
         this.NUMBER_OF_BULLETS = 20
 
         this.isAlive = true;
 
+        this.indicator = this.game.make.sprite(-2, -30, 'indicator')
+        this.indicator.anchor.setTo(0.5)
+        this.addChild(this.indicator);
+        this.indicator.smoothed = false;
+
+        this.arms = this.game.make.sprite(0, 0, 'yak_arm')
+        this.arms.anchor.setTo(0.5)
+        this.arms.animations.add("attack", [0, 1, 2, 3, 4,5], 16,false);
+        this.arms.animations.add("idle", [5], 1);
+        this.arms.animations.play("idle");
+        this.arms.smoothed = false;
+        this.addChild(this.arms);
 
     }
     death() {
@@ -176,14 +192,16 @@ export default class Player extends Phaser.Sprite {
 
         game.add.audio('throw_sfx').play();
         bullet.setPlayerId(this.id)
-        let _x = this.game.input.activePointer.x 
-        let _y = this.game.input.activePointer.y
+
+        let _x = this.game.input.worldX
+        let _y = this.game.input.worldY
         // let x = _x*100/Math.sqrt((_x*_x)+(_y*_y))
         // let y = _y*100/Math.sqrt((_x*_x)+(_y*_y))
         let x = _x
         let y = _y
-        console.log('x,y',x,y);
-        bullet.fireTo(x,y)
+        console.log('x,y', x, y);
+        this.arms.animations.play("attack");
+        bullet.fireTo(x, y)
         // console.log('bullet',bullet.toJson());
         this.socket.emit('shoot', bullet.toJson());
 
