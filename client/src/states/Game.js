@@ -25,13 +25,13 @@ export default class extends Phaser.State {
 
     this.setEventHandlers();
 
-    // this.t_bullet = new Bullet({
-    //   game: this,
-    //   x: 30,
-    //   y: 30
-    // });
+    this.t_bullet = new Bullet({
+      game: this,
+      x: 30,
+      y: 30
+    });
 
-    // this.game.add.existing(this.t_bullet);
+    this.game.add.existing(this.t_bullet);
 
     // for show fps
     this.game.time.advancedTiming = true;
@@ -52,8 +52,8 @@ export default class extends Phaser.State {
   }
   setEventHandlers() {
 
-    let target = 'http://localhost:3000'
-    this.socket = io.connect(target);
+    let url = 'http://158.108.139.18:3000'
+    this.socket = io.connect(url);
     this.socket.on('connect', () => {
       this.player = new Player({
         game: this.game,
@@ -102,8 +102,7 @@ export default class extends Phaser.State {
           this.players[data.enemy_id].isAlive = false;
           this.players[data.enemy_id].x = 0;
           this.players[data.enemy_id].y = 0;
-        }
-        else if (this.player.id == data.enemy_id) {
+        } else if (this.player.id == data.enemy_id) {
           this.player.isAlive = false;
         }
       });
@@ -123,18 +122,19 @@ export default class extends Phaser.State {
 
   render() {
     // if (__DEV__) {
-    //      this.game.debug.text('Active Bullets: ' + this.bulletPool.countLiving() + ' / ' + this.bulletPool.total, 32, 32);
-    //   // this.game.debug.spriteInfo(this.player, 32, 32)
-    //   this.game.debug.text('fps: ' + this.game.time.fps || '--', 32, 140);
-    //   if (this.player) {
-    //     this.game.debug.body(this.player);
-    //   }
-    //   if (this.enemyGroup) {
-    //     for (let i in this.players) {
-    //       this.game.debug.body(this.players[i]);
-    //     }
-    //   }
-    //   // this.game.debug.body(this.t_bullet)
+    this.game.debug.text('Active Bullets: ' + this.bulletPool.countLiving() + ' / ' + this.bulletPool.length, 32, 32);
+    // this.game.debug.spriteInfo(this.player, 32, 32)
+    this.game.debug.text('fps: ' + this.game.time.fps || '--', 32, 140);
+    if (this.player) {
+      this.game.debug.body(this.player);
+    }
+    if (this.enemyGroup) {
+      for (let i in this.players) {
+        this.game.debug.body(this.players[i]);
+      }
+    }
+
+    this.game.debug.body(this.t_bullet)
 
     // }
 
@@ -144,35 +144,52 @@ export default class extends Phaser.State {
 
 
   update() {
-// bullet -> enemy
+    // check enemyGroup with enemy
+    // this.game.physics.arcade.collide(this.enemyGroup, this.player, collideCallback, processCallback, callbackContext) 
     this.game.physics.arcade.overlap(this.enemyGroup, this.bulletPool, (enemy, bullet) => {
       if (bullet.player_id != enemy.id && enemy.isAlive) {
-
         var data = {
           id: this.player.id,
           enemy_id: enemy.id,
           username: enemy.username,
           shooter_id: bullet.player_id
         };
+
         bullet.kill()
         this.socket.emit('kill_player', data);
       }
+
     }, null, this)
 
-// bullet -> player
-    this.game.physics.arcade.overlap(this.player, this.bulletPool, (player, bullet) => {
-      if (bullet.player_id != player.id && player.isAlive) {
+    // bullet -> enemy
+    //     this.game.physics.arcade.overlap(this.enemyGroup, this.bulletPool, (enemy, bullet) => {
+    //       if (bullet.player_id != enemy.id && enemy.isAlive) {
 
-        var data = {
-          id: this.player.id,
-          enemy_id: player.id,
-          username: player.username,
-          shooter_id: bullet.player_id
-        };
-        bullet.kill()
-        this.socket.emit('kill_player', data);
-      }
-    }, null, this)
+    //         var data = {
+    //           id: this.player.id,
+    //           enemy_id: enemy.id,
+    //           username: enemy.username,
+    //           shooter_id: bullet.player_id
+    //         };
+    //         bullet.kill()
+    //         this.socket.emit('kill_player', data);
+    //       }
+    //     }, null, this)
+
+    // // bullet -> player
+        this.game.physics.arcade.overlap(this.player, this.bulletPool, (player, bullet) => {
+          if (bullet.player_id != player.id && player.isAlive) {
+
+            var data = {
+              id: this.player.id,
+              enemy_id: player.id,
+              username: player.username,
+              shooter_id: bullet.player_id
+            };
+            bullet.kill()
+            this.socket.emit('kill_player', data);
+          }
+        }, null, this)
 
   }
 
