@@ -60,7 +60,8 @@ export default class extends Phaser.State {
   }
   setEventHandlers() {
 
-    let url = 'http://158.108.139.18:3000'
+    // let url = 'http://158.108.139.18:3000'
+    let url = 'http://128.199.253.181:3000'
     this.socket = io.connect(url);
     this.socket.on('connect', () => {
       this.player = new Player({
