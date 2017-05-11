@@ -2,12 +2,13 @@ var express = require('express');
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var cors = require('cors')
 
 // app.use('/', express.static(__dirname + '/client'));
 // app.get('/', function (req, res) {
 //     res.sendfile(__dirname + '/client/index.html');
 // });
-
+app.use(cors())
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', "*")
   res.header('Access-Control-Allow-Methods','GET,PUT,POST,DELETE')
