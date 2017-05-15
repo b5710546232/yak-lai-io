@@ -25,13 +25,14 @@ export default class Bullet extends Phaser.Sprite {
         this.body.allowGravity = false
         this.scale.x = 2
         this.scale.y = 2
+        this.smoothed =false;
     }
 
    
     fireTo(x, y) {
         this.game.physics.arcade.moveToXY(this, x, y, BULLET_SPEED);
-        this.game.time.events.add(Phaser.Timer.SECOND * 1, this.resetBullet, this);
-        // this.lifespan = 1000;
+        // this.game.time.events.add(Phaser.Timer.SECOND * 1, this.resetBullet, this);
+        this.lifespan = 1000;
        
     }
     resetBullet(){
@@ -43,14 +44,14 @@ export default class Bullet extends Phaser.Sprite {
 
     toJson() {
 
-        let vec_x = (this.game.input.activePointer.x - this.x)
-        let vec_y = (this.game.input.activePointer.y - this.y)
+        let vec_x = (this.game.input.worldX - this.x)
+        let vec_y = (this.game.input.worldY - this.y)
         return {
             id: this.player_id,
             start_x: this.x,
             start_y: this.y,
-            end_x: this.game.input.activePointer.x,
-            end_y: this.game.input.activePointer.y,
+            end_x: this.game.input.worldX,
+            end_y: this.game.input.worldY,
             vec_x: vec_x,
             vec_y: vec_y,
             player_id: this.player_id
