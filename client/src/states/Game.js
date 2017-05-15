@@ -43,6 +43,11 @@ export default class extends Phaser.State {
     
     //////// Snapshot
     // this.snapshot = {};
+
+    let music = game.add.audio('soundtrack');
+    music.loop = true;
+    music.play();
+    music.volume = 0.1;
   }
 
   initBullets() {
@@ -201,6 +206,31 @@ export default class extends Phaser.State {
             //////////////////////////////////////////////////////
             // Update exisiting player
             let updating_player = this.players[current_player.id]; 
+
+            // add animation
+
+
+            let new_x = parseFloat(updating_player.x).toFixed( 0 );
+            let old_x = parseFloat(current_player.x).toFixed( 0 );
+
+            let new_y = parseFloat(updating_player.y).toFixed( 0 );
+            let old_y = parseFloat(current_player.y).toFixed( 0 );
+
+
+            let threshold = 5;
+
+
+            if(Math.abs(new_x-old_x) > threshold || Math.abs(new_y-old_y) > threshold ){
+              // console.log('walk',new_x,old_x,updating_player.animations.name )
+              if(updating_player.animations.name !== 'run'){
+                // console.log('walk',new_x,old_x,updating_player.animations.name )
+                updating_player.animations.play("run")
+              }
+            }else{
+              // console.log('idle',new_x,old_x,updating_player.animations.name )
+              updating_player.animations.play("idle")
+            }
+              
 
             //////////////////////////////////////////
             // Find horizontal direction

@@ -28,7 +28,7 @@ export default class ClientPlayer extends Phaser.Sprite {
         // this.animations.play("down", 4, true);
         this.animations.add("idle", [0, 1, 2, 3, 4], 12, true);
         this.animations.add("run", [5, 6, 7, 8, 9], 12, true);
-        this.animations.play("idle", true);
+        this.animations.play("idle");
 
         this.socket = socket
         this.current_cmd_action = CMD_ACTION
@@ -79,67 +79,10 @@ export default class ClientPlayer extends Phaser.Sprite {
         this.body.collideWorldBounds = true
 
     }
-    moveLeft() {
-        this.body.x -= PLAYER_SPEED * this.game.time.physicsElapsed;
-        // this.body.x -= PLAYER_SPEED;
-        this.animations.play("run");
-        this.anim_action = 'run'
-        this.current_cmd_action = CMD_ACTION.MOVE_LEFT
-        this.scale.x = -1
-        
-        //////////////////////////////
-        // Update direction
-        this.direction.x = -1;
-    }
+   
 
-    idle() {
-        this.body.velocity.x = 0
-        this.body.velocity.y = 0
-        this.animations.play("idle");
-        this.anim_action = 'idle'
-        this.current_cmd_action = CMD_ACTION.IDLE
-        
-        /////////////////////////////
-        // Update direction
-        this.direction.x = 0;
-        this.direction.y = 0;
-    }
 
-    moveRight() {
-        // console.log(this.game.time.physicsElapsed);
-        this.body.x += PLAYER_SPEED * this.game.time.physicsElapsed;
-        // this.body.velocity.x = PLAYER_SPEED
-        this.animations.play("run");
-        this.anim_action = 'run'
-        this.current_cmd_action = CMD_ACTION.MOVE_RIGHT
-        this.scale.x = 1
-
-        ////////////////////////////
-        // Update direction
-        this.direction.x = 1;
-    }
-    moveUp() {
-        this.body.y -= PLAYER_SPEED * this.game.time.physicsElapsed;
-        // this.body.velocity.y = -PLAYER_SPEED;
-        this.animations.play("run");
-        this.anim_action = 'run'
-        this.current_cmd_action = CMD_ACTION.MOVE_UP
-
-        ////////////////////////////
-        // Update direction
-        this.direction.x = -1;
-    }
-    moveDown() {
-        this.body.y += PLAYER_SPEED * this.game.time.physicsElapsed;
-        // this.body.velocity.y = PLAYER_SPEED;
-        this.animations.play("run");
-        this.anim_action = 'run'
-        this.current_cmd_action = CMD_ACTION.MOVE_DOWN
-
-        ////////////////////////////
-        // Update direction
-        this.direction.y = 1;
-    }
+   
     toJson() {
         return {
             id: this.id,
@@ -155,41 +98,12 @@ export default class ClientPlayer extends Phaser.Sprite {
         };
     }
 
-    handleInput() {
-        if (this.cursors.left.isDown || this.leftButton.isDown) {
-
-            this.moveLeft()
-        }
-        if (this.cursors.right.isDown || this.rightButton.isDown) {
-
-            this.moveRight()
-
-        }
-        if (this.upButton.isDown) {
-            this.moveUp()
-        }
-        if (this.downButton.isDown) {
-            this.moveDown()
-        } else if (!this.downButton.isDown && !this.upButton.isDown && !this.rightButton.isDown && !this.leftButton.isDown) {
-            this.idle()
-        }
-
-
-        if (this.shootButton.isDown) {
-            this.shoot()
-            // console.log('shoot')
-
-        }
-        if (this.countBullet.isDown) {
-            // console.log('dead = ', this.hero.bulletPool.countDead(), '; livling = ', this.hero.bulletPool.countLiving());
-        }
-
-    }
+   
 
     handleInputs() {
 
+
         let direction = { x:0, y:0 };
-        
         // Vertical
         if(this.cursors.up.isDown || this.upButton.isDown ) {
             direction.y = -1;

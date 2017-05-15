@@ -63,24 +63,7 @@ export default class Player extends Phaser.Sprite {
         this.animations.play("run");
     }
 
-    idle() {
-        this.body.velocity.x = 0
-        this.body.velocity.y = 0
-        this.animations.play("idle");
-    }
-
-    moveRight() {
-        this.body.velocity.x = PLAYER_SPEED
-        this.animations.play("run");
-    }
-    moveUp() {
-        this.body.velocity.y = -PLAYER_SPEED;
-        this.animations.play("run");
-    }
-    moveDown() {
-        this.body.velocity.y = PLAYER_SPEED;
-
-    }
+    
     shootTo(x, y) {
         if (this.lastBulletShotAt === undefined) this.lastBulletShotAt = 0
         if (this.game.time.now - this.lastBulletShotAt < this.SHOT_DELAY) return
