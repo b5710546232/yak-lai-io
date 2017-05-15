@@ -125,7 +125,13 @@ export default class Player extends Phaser.Sprite {
 
 
 
-    update() {}
+    update() {
+        if(this.arms.animations.name == 'attack'){
+            if(this.arms.animations.currentAnim.isFinished){
+                this.arms.animations.play('idle')
+            }
+        }
+    }
 
 
 

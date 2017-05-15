@@ -185,6 +185,12 @@ export default class ClientPlayer extends Phaser.Sprite {
         } else {
             this.respawn();
         }
+
+         if(this.arms.animations.name == 'attack'){
+            if(this.arms.animations.currentAnim.isFinished){
+                this.arms.animations.play('idle')
+            }
+        }
     }
 
     sendDirection() {
