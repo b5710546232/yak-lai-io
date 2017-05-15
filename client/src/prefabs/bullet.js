@@ -18,28 +18,20 @@ export default class Bullet extends Phaser.Sprite {
 
     setup() {
         this.game.physics.enable(this, Phaser.Physics.ARCADE)
-        // this.body.setCircle(16)
-        this.body.setSize(16,16, 8, 8)
+        this.body.setCircle(16)
         this.checkWorldBounds = true
         this.outOfBoundsKill = true
         this.outOfCameraBoundsKill = true
         this.body.allowGravity = false
         this.scale.x = 2
         this.scale.y = 2
-<<<<<<< HEAD
-        this.smoothed = false;
-=======
         this.smoothed =false;
->>>>>>> da4dcb5ed616c3b0513581ba3b36091a315075a3
     }
 
    
     fireTo(x, y) {
         this.game.physics.arcade.moveToXY(this, x, y, BULLET_SPEED);
-<<<<<<< HEAD
-=======
         // this.game.time.events.add(Phaser.Timer.SECOND * 1, this.resetBullet, this);
->>>>>>> da4dcb5ed616c3b0513581ba3b36091a315075a3
         this.lifespan = 1000;
        
     }

@@ -9,9 +9,9 @@ import GameState from './states/Game'
 
 
 import config from './config'
+
 const width = config.gameWidth
 const height = config.gameHeight
-
 
 class Game extends Phaser.Game {
   constructor() {
@@ -26,16 +26,16 @@ class Game extends Phaser.Game {
     //   transparent: false,
     //   enableDebug: true
     // });
-
+   
 
 
     this.state.add('Boot', BootState, false)
     this.state.add('Splash', SplashState, false)
-    this.state.add('Game', GameState, false)
+    this.state.add('Game', GameState,false)
 
 
     // start(key, clearWorld, clearCache, parameter)
-    this.state.start('Boot', false)
+    this.state.start('Boot',false)
   }
 
 }

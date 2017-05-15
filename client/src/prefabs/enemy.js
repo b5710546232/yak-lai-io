@@ -3,13 +3,13 @@ import Phaser from 'phaser'
 
 const PLAYER_SPEED = 100
 
-export default class Player extends Phaser.Sprite {
+export default class Enemy extends Phaser.Sprite {
     constructor({
         game,
         x,
         y,
         asset,
-        id
+        enemy_info
     }) {
         super(game, x, y, asset)
         // this.game.add.sprite(x, y,this);
@@ -18,7 +18,7 @@ export default class Player extends Phaser.Sprite {
         this.animations.add("idle", [0, 1, 2, 3, 4], 12, true);
         this.animations.add("run", [5, 6, 7, 8, 9], 12, true);
         this.animations.play("idle", true);
-        // this.enemy_info = enemy_info
+        this.enemy_info = enemy_info
         this.anchor.setTo(0.5)
         this.setup()
         this.anim_action = 'idle'
@@ -26,24 +26,15 @@ export default class Player extends Phaser.Sprite {
         this.SHOT_DELAY = 300
         this.NUMBER_OF_BULLETS = 20
 
-        this.id = id;
-
-        this.arms = this.game.make.sprite(0, 0, 'yak_arm')
-        this.arms.anchor.setTo(0.5)
-        this.arms.animations.add("attack", [0, 1, 2, 3, 4,5], 16,false);
-        this.arms.animations.add("idle", [5], 1);
-        this.arms.animations.play("idle");
-        this.arms.smoothed = false;
-        this.addChild(this.arms);
     }
     create() {
 
     }
-    // death() {
-    //     this.x = Math.floor((Math.random() * 10) + 1)
-    //     this.y = Math.floor((Math.random() * 10) + 1)
+    death() {
+        this.x = Math.floor((Math.random() * 10) + 1)
+        this.y = Math.floor((Math.random() * 10) + 1)
 
-    // }
+    }
 
     setup() {
 
@@ -51,14 +42,14 @@ export default class Player extends Phaser.Sprite {
         this.body.setSize(32, 48, 6, 0)
         this.body.collideWorldBounds = true
 
-        // this.id = this.enemy_info.id;
+        this.id = this.enemy_info.id;
         this.username = '';
-        // this.color = this.enemy_info.color;
-        // this.mass = this.enemy_info.mass;
-        // this.speed_base = 5000;
-        // this.speed = this.enemy_info.speed;
-        // this.width = this.enemy_info.width;
-        // this.height = this.enemy_info.height;
+        this.color = this.enemy_info.color;
+        this.mass = this.enemy_info.mass;
+        this.speed_base = 5000;
+        this.speed = this.enemy_info.speed;
+        this.width = this.enemy_info.width;
+        this.height = this.enemy_info.height;
 
 
     }
@@ -71,7 +62,24 @@ export default class Player extends Phaser.Sprite {
         this.animations.play("run");
     }
 
-    
+    idle() {
+        this.body.velocity.x = 0
+        this.body.velocity.y = 0
+        this.animations.play("idle");
+    }
+
+    moveRight() {
+        this.body.velocity.x = PLAYER_SPEED
+        this.animations.play("run");
+    }
+    moveUp() {
+        this.body.velocity.y = -PLAYER_SPEED;
+        this.animations.play("run");
+    }
+    moveDown() {
+        this.body.velocity.y = PLAYER_SPEED;
+
+    }
     shootTo(x, y) {
         if (this.lastBulletShotAt === undefined) this.lastBulletShotAt = 0
         if (this.game.time.now - this.lastBulletShotAt < this.SHOT_DELAY) return

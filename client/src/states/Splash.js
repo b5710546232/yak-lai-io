@@ -23,10 +23,6 @@ export default class extends Phaser.State {
     this.load.audio('dead_sfx', ('assets/sound/dead_sound.mp3'));
     this.load.audio('throw_sfx', ('assets/sound/throwing_sound.wav'));
 
-<<<<<<< HEAD
-
-=======
->>>>>>> da4dcb5ed616c3b0513581ba3b36091a315075a3
   }
 
   create () {

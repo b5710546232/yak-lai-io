@@ -27,20 +27,17 @@ export default class extends Phaser.State {
     banner.anchor.setTo(0.5)
 
 
-
     // set bound of world
 
     this.game.world.setBounds(0, 0, Config.gameWidth * Config.worldSize, Config.gameHeight * Config.worldSize)
 
     this.setEventHandlers();
     // this.game.add.e
-
     this.t_bullet = new Bullet({
       game: this,
       x: 30,
       y: 30
     });
-
     this.game.add.existing(this.t_bullet);
 
     // for show fps
@@ -50,17 +47,14 @@ export default class extends Phaser.State {
     this.enemyGroup = this.game.add.group()
 
     this.initBullets();
-
     
     //////// Snapshot
     // this.snapshot = {};
-
 
     let music = game.add.audio('soundtrack');
     music.loop = true;
     music.play();
     music.volume = 0.1;
-
   }
 
   initBullets() {
@@ -73,46 +67,9 @@ export default class extends Phaser.State {
   }
   setEventHandlers() {
 
-    // let url = 'http://158.108.139.18:3000'
-    let url = 'http://128.199.253.181:3000'
-    this.socket = io.connect(url);
+    let target = 'http://localhost:3000'
+    this.socket = io.connect(target);
     this.socket.on('connect', () => {
-<<<<<<< HEAD
-      this.player = new Player({
-        game: this.game,
-        x: this.world.centerX,
-        y: this.world.centerY,
-        asset: 'player',
-        socket: this.socket
-      })
-
-      this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON)
-
-
-      this.player.setBulletPool(this.bulletPool);
-      this.socket.emit('new_player', this.player.toJson());
-
-      // new player
-      this.socket.on('new_player', (enemy) => {
-        // console.log('new-player', enemy);
-        this.players[enemy.id] = new Enemy({
-          game: this.game,
-          x: enemy.x,
-          y: enemy.y,
-          asset: 'player',
-          enemy_info: enemy
-        })
-        this.enemyGroup.add(this.players[enemy.id])
-        this.players[enemy.id].setBulletPool(this.bulletPool);
-      })
-      // Player
-      this.socket.on('move_player', (enemy) => {
-        if (this.players[enemy.id]) {
-          this.players[enemy.id].move(enemy);
-        }
-      });
-=======
->>>>>>> da4dcb5ed616c3b0513581ba3b36091a315075a3
 
       ///////////////////////////////////////////////
       // Tell server about play area
@@ -197,7 +154,8 @@ export default class extends Phaser.State {
           this.players[data.enemy_id].isAlive = false;
           this.players[data.enemy_id].x = 0;
           this.players[data.enemy_id].y = 0;
-        } else if (this.player.id == data.enemy_id) {
+        }
+        else if (this.player.id == data.enemy_id) {
           this.player.isAlive = false;
         }
       });
@@ -353,22 +311,21 @@ export default class extends Phaser.State {
   }
 
   render() {
-    // if (__DEV__) {
-    // this.game.debug.text('Active Bullets: ' + this.bulletPool.countLiving() + ' / ' + this.bulletPool.length, 32, 32);
-    // // this.game.debug.spriteInfo(this.player, 32, 32)
-    // this.game.debug.text('fps: ' + this.game.time.fps || '--', 32, 140);
-    // if (this.player) {
-    //   this.game.debug.body(this.player);
-    // }
-    // if (this.enemyGroup) {
-    //   for (let i in this.players) {
-    //     this.game.debug.body(this.players[i]);
-    //   }
-    // }
+    if (__DEV__) {
+         this.game.debug.text('Active Bullets: ' + this.bulletPool.countLiving() + ' / ' + this.bulletPool.total, 32, 32);
+      // this.game.debug.spriteInfo(this.player, 32, 32)
+      this.game.debug.text('fps: ' + this.game.time.fps || '--', 32, 140);
+      if (this.player) {
+        this.game.debug.body(this.player);
+      }
+      if (this.enemyGroup) {
+        for (let i in this.players) {
+          this.game.debug.body(this.players[i]);
+        }
+      }
+      this.game.debug.body(this.t_bullet)
 
-    // this.game.debug.body(this.t_bullet)
-
-    // }
+    }
 
   }
 
@@ -376,7 +333,6 @@ export default class extends Phaser.State {
 
 
   update() {
-
 
 
     this.game.physics.arcade.overlap(this.enemyGroup, this.bulletPool, this.clientBulletOverlapHandler, this.bulletProcessCallback ,this);
@@ -393,7 +349,6 @@ export default class extends Phaser.State {
       let hitPlayerInfo = {
         dealerId: this.player.id,
         takerId: player.id
-
       }
       this.socket.emit("hitPlayer", hitPlayerInfo);
     }
