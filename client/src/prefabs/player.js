@@ -3,25 +3,13 @@ import Phaser from 'phaser'
 
 const PLAYER_SPEED = 100
 
-import Config from '../config.js'
-
-const CMD_ACTION = {
-    IDLE: 'IDLE',
-    MOVE_LEFT: 'MOVE_LEFT',
-    MOVE_UP: 'MOVE_UP',
-    MOVE_DOWN: 'MOVE_DOWN',
-    MOVE_RIGHT: 'MOVE_RIGHT',
-}
-
 export default class Player extends Phaser.Sprite {
-
-
     constructor({
         game,
         x,
         y,
         asset,
-        socket
+        id
     }) {
         super(game, x, y, asset)
 
@@ -34,19 +22,15 @@ export default class Player extends Phaser.Sprite {
         this.animations.add("idle", [0, 1, 2, 3, 4], 12, true);
         this.animations.add("run", [5, 6, 7, 8, 9], 12, true);
         this.animations.play("idle", true);
-
-        this.socket = socket
-        this.current_cmd_action = CMD_ACTION
-        this.id = socket.io.engine.id;
-        this.anim_action = 'idle'
-
+        // this.enemy_info = enemy_info
         this.anchor.setTo(0.5)
         this.setup()
-        this.initInput()
+        this.anim_action = 'idle'
 
         this.SHOT_DELAY = 750
         this.NUMBER_OF_BULLETS = 20
 
+<<<<<<< HEAD
         this.isAlive = true;
 
         this.indicator = this.game.make.sprite(-2, -30, 'indicator')
@@ -73,11 +57,26 @@ export default class Player extends Phaser.Sprite {
     }
     setBulletPool(pool) {
         this.bulletPool = pool;
+=======
+        this.id = id;
+>>>>>>> da4dcb5ed616c3b0513581ba3b36091a315075a3
 
+        this.arms = this.game.make.sprite(0, 0, 'yak_arm')
+        this.arms.anchor.setTo(0.5)
+        this.arms.animations.add("attack", [0, 1, 2, 3, 4,5], 16,false);
+        this.arms.animations.add("idle", [5], 1);
+        this.arms.animations.play("idle");
+        this.arms.smoothed = false;
+        this.addChild(this.arms);
     }
     create() {
 
     }
+    // death() {
+    //     this.x = Math.floor((Math.random() * 10) + 1)
+    //     this.y = Math.floor((Math.random() * 10) + 1)
+
+    // }
 
     setup() {
 
@@ -85,41 +84,36 @@ export default class Player extends Phaser.Sprite {
         this.body.setSize(32, 48, 6, 0)
         this.body.collideWorldBounds = true
 
+        // this.id = this.enemy_info.id;
+        this.username = '';
+        // this.color = this.enemy_info.color;
+        // this.mass = this.enemy_info.mass;
+        // this.speed_base = 5000;
+        // this.speed = this.enemy_info.speed;
+        // this.width = this.enemy_info.width;
+        // this.height = this.enemy_info.height;
+
+
+    }
+    setBulletPool(pool) {
+        this.bulletPool = pool;
+
     }
     moveLeft() {
         this.body.velocity.x = -PLAYER_SPEED
         this.animations.play("run");
-        this.anim_action = 'run'
-        this.current_cmd_action = CMD_ACTION.MOVE_LEFT
-        this.scale.x = -1
     }
 
-    idle() {
-        this.body.velocity.x = 0
-        this.body.velocity.y = 0
-        this.animations.play("idle");
-        this.anim_action = 'idle'
-        this.current_cmd_action = CMD_ACTION.IDLE
-    }
+    
+    shootTo(x, y) {
+        if (this.lastBulletShotAt === undefined) this.lastBulletShotAt = 0
+        if (this.game.time.now - this.lastBulletShotAt < this.SHOT_DELAY) return
+        this.lastBulletShotAt = this.game.time.now
 
-    moveRight() {
-        this.body.velocity.x = PLAYER_SPEED
-        this.animations.play("run");
-        this.anim_action = 'run'
-        this.current_cmd_action = CMD_ACTION.MOVE_RIGHT
-        this.scale.x = 1
-    }
-    moveUp() {
-        this.body.velocity.y = -PLAYER_SPEED;
-        this.animations.play("run");
-        this.anim_action = 'run'
-        this.current_cmd_action = CMD_ACTION.MOVE_UP
-    }
-    moveDown() {
-        this.body.velocity.y = PLAYER_SPEED;
-        this.animations.play("run");
-        this.anim_action = 'run'
-        this.current_cmd_action = CMD_ACTION.MOVE_DOWN
+        let bullet = this.bulletPool.init(this.position.x, this.position.y)
+        if (bullet === null || bullet === undefined) return
+        bullet.setPlayerId(this.id)
+        bullet.fireTo(x, y)
     }
     toJson() {
         return {
@@ -131,10 +125,10 @@ export default class Player extends Phaser.Sprite {
             x: this.x,
             y: this.y,
             height: this.height,
-            width: this.width,
-            anim_action: this.anim_action
+            width: this.width
         };
     }
+<<<<<<< HEAD
 
     handleInput() {
         if (this.cursors.left.isDown || this.leftButton.isDown) {
@@ -229,17 +223,39 @@ export default class Player extends Phaser.Sprite {
             0;
             this.socket.emit('move_player', this.toJson());
             this.isAlive = true;
-        }
-        this.handleInput()
-        if (game.input.activePointer.isDown) {
-            this.shoot()
+=======
+     death(){
+        this.x = Math.floor((Math.random() * 10) + 1)
+        this.y = Math.floor((Math.random() * 10) + 1)
+        this.isAlive = false;
+    }
 
+    move(enemy_info) {
+        this.enemy_info = enemy_info
+
+        this.id = enemy_info.id;
+        this.username = '';
+        this.color = enemy_info.color;
+        this.mass = enemy_info.mass;
+        this.speed_base = 5000;
+        this.speed = enemy_info.speed;
+        this.width = enemy_info.width;
+        this.height = enemy_info.height;
+        this.x = enemy_info.x
+        this.y = enemy_info.y
+        if (enemy_info.anim_action != this.anim_action) {
+            this.anim_action = enemy_info.anim_action
+            this.animations.play(enemy_info.anim_action)
+>>>>>>> da4dcb5ed616c3b0513581ba3b36091a315075a3
         }
+
 
 
     }
 
 
+
+    update() {}
 
 
 
