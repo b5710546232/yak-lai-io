@@ -27,6 +27,14 @@ export default class Player extends Phaser.Sprite {
         this.NUMBER_OF_BULLETS = 20
 
         this.id = id;
+
+        this.arms = this.game.make.sprite(0, 0, 'yak_arm')
+        this.arms.anchor.setTo(0.5)
+        this.arms.animations.add("attack", [0, 1, 2, 3, 4,5], 16,false);
+        this.arms.animations.add("idle", [5], 1);
+        this.arms.animations.play("idle");
+        this.arms.smoothed = false;
+        this.addChild(this.arms);
     }
     create() {
 

@@ -135,6 +135,8 @@ export default class extends Phaser.State {
         if (this.players[enemy.id]) {
           // console.log('shoot-enemy',enemy);
           this.players[enemy.id].shootTo(enemy.end_x, enemy.end_y)
+          
+
         }
       });
       /////////////////////////////////////////////////////////
@@ -278,6 +280,8 @@ export default class extends Phaser.State {
           // console.log(this.players[currentBullet.ownerId], "shot");
           if( currentBullet.ownerId != this.player.id) {
             this.players[currentBullet.ownerId].shootTo(currentBullet.endX, currentBullet.endY);
+            this.players[currentBullet.ownerId].arms.animations.play("attack")
+            console.log('attack')
           }
         }
       });
@@ -317,44 +321,11 @@ export default class extends Phaser.State {
 
 
   update() {
-// // bullet -> enemy
-//     this.game.physics.arcade.overlap(this.enemyGroup, this.bulletPool, (enemy, bullet) => {
-//       // bullet.kill()
-//       console.log("HIT")
-//       if (bullet.player_id != enemy.id && enemy.isAlive) {
 
-//         var data = {
-//           id: this.player.id,
-//           enemy_id: enemy.id,
-//           username: enemy.username,
-//           shooter_id: bullet.player_id
-//         };
-
-//         // enemy.kill()
-//         this.socket.emit('kill_player', data);
-//         return;
-//       }
-//     }, null, this)
-
-// // bullet -> player
-//     this.game.physics.arcade.overlap(this.player, this.bulletPool, (player, bullet) => {
-//       // bullet.kill()
-//       if (bullet.player_id != player.id && player.isAlive) {
-
-//         var data = {
-//           id: this.player.id,
-//           enemy_id: player.id,
-//           username: player.username,
-//           shooter_id: bullet.player_id
-//         };
-//         this.socket.emit('kill_player', data);
-//         return;
-//       }
-//     }, null, this)
 
     this.game.physics.arcade.overlap(this.enemyGroup, this.bulletPool, this.clientBulletOverlapHandler, this.bulletProcessCallback ,this);
     
-    // this.game.physics.arcade.overlap(this.enemyGroup, this.bullet)
+
   }
 
   clientBulletOverlapHandler(player, bullet) {

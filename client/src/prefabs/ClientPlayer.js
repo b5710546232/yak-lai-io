@@ -49,6 +49,15 @@ export default class ClientPlayer extends Phaser.Sprite {
         console.log("Player's sprite width:", this.width);
         console.log("Player's sprite height:", this.height);
 
+
+        this.arms = this.game.make.sprite(0, 0, 'yak_arm')
+        this.arms.anchor.setTo(0.5)
+        this.arms.animations.add("attack", [0, 1, 2, 3, 4,5], 16);
+        this.arms.animations.add("idle", [5], 1);
+        this.arms.animations.play("idle");
+        this.arms.smoothed = false;
+        this.addChild(this.arms);
+
         this.direction = {
             x: 0,
             y: 0
@@ -158,24 +167,14 @@ export default class ClientPlayer extends Phaser.Sprite {
         console.log('x,y',x,y);
         bullet.fireTo(x,y)
         // console.log('bullet',bullet.toJson());
+
+        this.arms.animations.play("attack")
         this.socket.emit('shoot', bullet.toJson());
 
     }
 
     update() {
-        // if (this.isAlive) {
-        //     this.socket.emit('move_player', this.toJson());
-        // } else {
-        //     this.x = this.game.world.randomX;
-        //     this.y = this.game.world.randomY;
-        //     0;
-        //     this.socket.emit('move_player', this.toJson());
-        //     this.isAlive = true;
-        // }
-        // let direction = this.handleInput();
-        // if (game.input.activePointer.isDown) {
-        //     this.shoot();
-        // }
+     
         if(this.isAlive) {
             this.direction = this.handleInputs();
             if (game.input.activePointer.isDown) {
