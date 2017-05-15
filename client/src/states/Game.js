@@ -10,6 +10,8 @@ import io from 'socket.io-client'
 import Bullet from '../prefabs/bullet'
 import Pool from '../utils/pool'
 
+import Config from '../config'
+
 export default class extends Phaser.State {
 
   preload() {}
@@ -23,6 +25,11 @@ export default class extends Phaser.State {
     banner.fill = '#77BFA3'
     banner.smoothed = false
     banner.anchor.setTo(0.5)
+
+
+    // set bound of world
+
+    this.game.world.setBounds(0, 0, Config.gameWidth * Config.worldSize, Config.gameHeight * Config.worldSize)
 
     this.setEventHandlers();
     // this.game.add.e
@@ -189,6 +196,11 @@ export default class extends Phaser.State {
               });
               this.players[current_player.id] = clientPlayer;
               this.player = clientPlayer;
+
+              // set camera follow player
+              this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON)
+
+
               clientPlayer.setBulletPool(this.bulletPool);
             } else {
               console.log("[NEW] Other Player");

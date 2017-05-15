@@ -158,8 +158,10 @@ export default class ClientPlayer extends Phaser.Sprite {
 
 
         bullet.setPlayerId(this.id)
-        let _x = this.game.input.activePointer.x 
-        let _y = this.game.input.activePointer.y
+        
+        let _x = this.game.input.worldX
+        let _y = this.game.input.worldY
+        
         // let x = _x*100/Math.sqrt((_x*_x)+(_y*_y))
         // let y = _y*100/Math.sqrt((_x*_x)+(_y*_y))
         let x = _x
