@@ -1,4 +1,4 @@
-
+"use strict";
 const PLAYER_STARTING_STATS = {
     HEALTH: 1,
     DAMAGE: 1,
