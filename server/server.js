@@ -215,6 +215,6 @@ setInterval(()=>{
     // io.emit('update_snapshot', snapshot);
 }, INTERVAL)
 
-const randomPosition = (min, max) => {
+var randomPosition = (min, max) => {
     return Math.floor(Math.random() * (max - min) + min);
 }
