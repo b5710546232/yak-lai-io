@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="tile-sheet-yak" tilewidth="32" tileheight="32" tilecount="64" columns="8">
+  <image source="../Learning/yak-lai-io/client/assets/sprites/tile-sheet-yak.png" width="256" height="256"/>
+ </tileset>
+ <layer name="GroundLayer" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJztwwEJAAAMBKEL8v1zLsdAwVVTVVVVVVVVVVXV5w8WkBGA
+  </data>
+ </layer>
+ <layer name="WallLayer" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJztzwENADAIwDBM4N/qbeykTSZgOzN7pN/5aPHR4qPFR4uPFh8tPlp8tPho8dHio8VHi48WHy0+Wny0+Gjx0eKjxUeLjxYfLT5arn1c6AFgPhAV
+  </data>
+ </layer>
+</map>

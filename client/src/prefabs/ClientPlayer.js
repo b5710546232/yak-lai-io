@@ -26,18 +26,18 @@ export default class ClientPlayer extends Phaser.Sprite {
         super(game, x, y, 'blank_48x48')
 
         // this.game.add.sprite(x, y,this);
-        
+
 
         this.game.add.existing(this);
         // this.animations.play("down", 4, true);
-    
+
         this.character = this.game.make.sprite(0, 0, asset)
         this.character.anchor.setTo(0.5)
-     
+
         this.character.animations.add("idle", [0, 1, 2, 3, 4], 12, true);
         this.character.animations.add("run", [5, 6, 7, 8, 9], 12, true);
         this.character.animations.play("idle");
-        
+
         this.character.smoothed = false;
         this.addChild(this.character);
 
@@ -67,7 +67,7 @@ export default class ClientPlayer extends Phaser.Sprite {
 
         this.arms = this.game.make.sprite(0, 0, 'yak_arm')
         this.arms.anchor.setTo(0.5)
-        this.arms.animations.add("attack", [0, 1, 2, 3, 4,5], 16);
+        this.arms.animations.add("attack", [0, 1, 2, 3, 4, 5], 16);
         this.arms.animations.add("idle", [5], 1);
         this.arms.animations.play("idle");
         this.arms.smoothed = false;
@@ -78,7 +78,7 @@ export default class ClientPlayer extends Phaser.Sprite {
             y: 0
         };
 
-        this.game.time.events.loop(Phaser.Timer.SECOND * 0.100, this.sendDirection, this );
+        this.game.time.events.loop(Phaser.Timer.SECOND * 0.100, this.sendDirection, this);
     }
     death() {
         this.x = Math.floor((Math.random() * 10) + 1)
@@ -98,18 +98,18 @@ export default class ClientPlayer extends Phaser.Sprite {
 
     setup() {
 
-        console.log(this.width,this.height,'check')
-        console.log(this.character.width,this.character.height,'char')
+        console.log(this.width, this.height, 'check')
+        console.log(this.character.width, this.character.height, 'char')
         this.game.physics.enable(this, Phaser.Physics.ARCADE)
         this.body.setSize(32, 48, 6, 0)
         this.body.collideWorldBounds = true
-        
+
 
     }
-   
 
 
-   
+
+
     toJson() {
         return {
             id: this.id,
@@ -125,24 +125,24 @@ export default class ClientPlayer extends Phaser.Sprite {
         };
     }
 
-   
+
 
     handleInputs() {
 
 
-        let direction = { x:0, y:0 };
+        let direction = { x: 0, y: 0 };
         // Vertical
-        if(this.cursors.up.isDown || this.upButton.isDown ) {
+        if (this.cursors.up.isDown || this.upButton.isDown) {
             direction.y = -1;
-        } else if(this.cursors.down.isDown || this.downButton.isDown ) {
+        } else if (this.cursors.down.isDown || this.downButton.isDown) {
             direction.y = 1;
         }
 
         // Horizontal
-        if(this.cursors.left.isDown || this.leftButton.isDown) {
+        if (this.cursors.left.isDown || this.leftButton.isDown) {
             direction.x = -1;
             this.scale.x = -1;
-        } else if(this.cursors.right.isDown || this.rightButton.isDown) {
+        } else if (this.cursors.right.isDown || this.rightButton.isDown) {
             direction.x = 1;
             this.scale.x = 1;
         }
@@ -176,16 +176,16 @@ export default class ClientPlayer extends Phaser.Sprite {
 
 
         bullet.setPlayerId(this.id)
-        
+
         let _x = this.game.input.worldX
         let _y = this.game.input.worldY
-        
+
         // let x = _x*100/Math.sqrt((_x*_x)+(_y*_y))
         // let y = _y*100/Math.sqrt((_x*_x)+(_y*_y))
         let x = _x
         let y = _y
-        console.log('x,y',x,y);
-        bullet.fireTo(x,y)
+        console.log('x,y', x, y);
+        bullet.fireTo(x, y)
         // console.log('bullet',bullet.toJson());
 
         this.arms.animations.play("attack")
@@ -194,8 +194,8 @@ export default class ClientPlayer extends Phaser.Sprite {
     }
 
     update() {
-     
-        if(this.isAlive) {
+
+        if (this.isAlive) {
             this.direction = this.handleInputs();
             if (game.input.activePointer.isDown) {
                 this.shoot();
@@ -204,8 +204,8 @@ export default class ClientPlayer extends Phaser.Sprite {
             this.respawn();
         }
 
-         if(this.arms.animations.name == 'attack'){
-            if(this.arms.animations.currentAnim.isFinished){
+        if (this.arms.animations.name == 'attack') {
+            if (this.arms.animations.currentAnim.isFinished) {
                 this.arms.animations.play('idle')
             }
         }
@@ -222,12 +222,17 @@ export default class ClientPlayer extends Phaser.Sprite {
     }
 
     respawn() {
-        if(this.respawnButton.isDown) {
-            let playerInfo = {
-                id: this.id
-            };
-            this.socket.emit('respawn', playerInfo);
-        }
+        console.log('res-spawn')
+        let playerInfo = {
+            id: this.id
+        };
+        this.socket.emit('respawn', playerInfo);
+        // if(this.respawnButton.isDown) {
+        //     let playerInfo = {
+        //         id: this.id
+        //     };
+        //     this.socket.emit('respawn', playerInfo);
+        // }
     }
 
 }

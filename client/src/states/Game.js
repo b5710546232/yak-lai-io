@@ -3,7 +3,7 @@ import Phaser from 'phaser'
 
 import Player from '../prefabs/player'
 import Enemy from '../prefabs/enemy'
-import ClientPlayer from '../prefabs/ClientPlayer'
+import ClientPlayer from '../prefabs/clientPlayer'
 
 import io from 'socket.io-client'
 
@@ -14,7 +14,7 @@ import Config from '../config'
 
 export default class extends Phaser.State {
 
-  preload() {}
+  preload() { }
 
   create() {
     const bannerText = 'yak-lai'
@@ -25,6 +25,22 @@ export default class extends Phaser.State {
     banner.fill = '#77BFA3'
     banner.smoothed = false
     banner.anchor.setTo(0.5)
+
+
+    this.map = this.game.add.tilemap('tilemap');
+    this.map.addTilesetImage('tile-sheet-yak', 'tiles');
+
+    
+
+    this.groundLayer = this.map.createLayer('GroundLayer');
+    this.wallLayer = this.map.createLayer('WallLayer');
+
+ 
+    //Change the world size to match the size of this layer
+    this.groundLayer.resizeWorld();
+
+
+    
 
 
     // set bound of world
@@ -44,10 +60,10 @@ export default class extends Phaser.State {
     this.game.time.advancedTiming = true;
 
     this.players = [];
-    this.enemyGroup = this.game.add.group()
+    this.playerGroup = this.game.add.group()
 
     this.initBullets();
-    
+
     //////// Snapshot
     // this.snapshot = {};
 
@@ -119,9 +135,9 @@ export default class extends Phaser.State {
       //     // enemy_info: enemy
       //     player_info: newPlayer
       //   })
-      //   // this.enemyGroup.add(this.players[enemy.id])
+      //   // this.playerGroup.add(this.players[enemy.id])
       //   // this.players[enemy.id].setBulletPool(this.bulletPool);
-      //   this.enemyGroup.add(this.players[newPlayer.id])
+      //   this.playerGroup.add(this.players[newPlayer.id])
       //   this.players[newPlayer.id].setBulletPool(this.bulletPool);
       // })
       //////////////////////////////////////////////////
@@ -142,7 +158,7 @@ export default class extends Phaser.State {
         if (this.players[enemy.id]) {
           // console.log('shoot-enemy',enemy);
           this.players[enemy.id].shootTo(enemy.end_x, enemy.end_y)
-          
+
 
         }
       });
@@ -176,16 +192,16 @@ export default class extends Phaser.State {
       // Update snapshot from server
       ///////////////////////////////////////////////
       this.socket.on('update_snapshot', (snapshot) => {
-        
+
         // console.log("Updating snapshot...", snapshot);
         // console.log("# of PLAYERS =", snapshot.players);
-        for(let socket_id in snapshot.players) {
+        for (let socket_id in snapshot.players) {
           // console.log(snapshot.players[socket_id]);
           let current_player = snapshot.players[socket_id];
           // console.log("[ID]", snapshot.players[current_player].username);
-          if(!this.players[current_player.id]) {
+          if (!this.players[current_player.id]) {
             // console.log("Is client player" , "from session ", this.socket.io.engine.id, "from server ", current_player.id );
-            if(this.socket.io.engine.id == current_player.id) {
+            if (this.socket.io.engine.id == current_player.id) {
               console.log("[NEW] Client")
               let clientPlayer = new ClientPlayer({
                 game: this.game,
@@ -215,42 +231,42 @@ export default class extends Phaser.State {
               this.players[current_player.id] = newPlayer;
               newPlayer.setBulletPool(this.bulletPool);
             }
-              this.enemyGroup.add(this.players[current_player.id]);
+            this.playerGroup.add(this.players[current_player.id]);
           } else {
             //////////////////////////////////////////////////////
             // Update exisiting player
-            let updating_player = this.players[current_player.id]; 
+            let updating_player = this.players[current_player.id];
 
             // add animation
 
 
-            let new_x = parseFloat(updating_player.x).toFixed( 0 );
-            let old_x = parseFloat(current_player.x).toFixed( 0 );
+            let new_x = parseFloat(updating_player.x).toFixed(0);
+            let old_x = parseFloat(current_player.x).toFixed(0);
 
-            let new_y = parseFloat(updating_player.y).toFixed( 0 );
-            let old_y = parseFloat(current_player.y).toFixed( 0 );
+            let new_y = parseFloat(updating_player.y).toFixed(0);
+            let old_y = parseFloat(current_player.y).toFixed(0);
 
 
             let threshold = 5;
 
 
-            if(Math.abs(new_x-old_x) > threshold || Math.abs(new_y-old_y) > threshold ){
+            if (Math.abs(new_x - old_x) > threshold || Math.abs(new_y - old_y) > threshold) {
               // console.log('walk',new_x,old_x,updating_player.animations.name )
-              if(updating_player.character.animations.name !== 'run'){
+              if (updating_player.character.animations.name !== 'run') {
                 // console.log('walk',new_x,old_x,updating_player.animations.name )
                 updating_player.character.animations.play("run")
               }
-            }else{
+            } else {
               // console.log('idle',new_x,old_x,updating_player.animations.name )
               updating_player.character.animations.play("idle")
             }
-              
+
 
             //////////////////////////////////////////
             // Find horizontal direction
-            updating_player.scale.x = ( current_player.x > updating_player.x ) ? 1 : -1;
+            updating_player.scale.x = (current_player.x > updating_player.x) ? 1 : -1;
 
-            if(updating_player.alive && updating_player.exists && updating_player.visible) {
+            if (updating_player.alive && updating_player.exists && updating_player.visible) {
               //////////////////////////////////////////
               // Tween with Linear interpolation
               this.game.add.tween(updating_player).to({
@@ -262,19 +278,19 @@ export default class extends Phaser.State {
 
           /////////////////////////////////////////////////////////
           // Died player is killed
-          let currentPlayer = this.players[current_player.id]; 
+          let currentPlayer = this.players[current_player.id];
           currentPlayer.isAlive = current_player.isAlive;
-          if(!currentPlayer.isAlive) {
-            if( currentPlayer.alive && currentPlayer.exists && currentPlayer.visible ) {
+          if (!currentPlayer.isAlive) {
+            if (currentPlayer.alive && currentPlayer.exists && currentPlayer.visible) {
               console.log(this.players[current_player.id].id, "died.");
               this.players[current_player.id].kill();
             }
-          } 
+          }
           ///////////////////////////////////////////////////
           // Respawn player is alive again
           else {
-            if( currentPlayer.isAlive ) {
-              if( !currentPlayer.alive && !currentPlayer.exists && !currentPlayer.visible ) {
+            if (currentPlayer.isAlive) {
+              if (!currentPlayer.alive && !currentPlayer.exists && !currentPlayer.visible) {
                 // this.players[current_player.id].revive();
                 // this.players[current_player.id].x = current_player.x;
                 // this.players[current_player.id].y = current_player.y;
@@ -286,11 +302,11 @@ export default class extends Phaser.State {
         }
 
         // console.log(snapshot.bullets);
-        for(let bulletInfo in snapshot.bullets) {
+        for (let bulletInfo in snapshot.bullets) {
           let currentBullet = snapshot.bullets[bulletInfo];
           // console.log(currentBullet);
           // console.log(this.players[currentBullet.ownerId], "shot");
-          if( currentBullet.ownerId != this.player.id) {
+          if (currentBullet.ownerId != this.player.id) {
             this.players[currentBullet.ownerId].shootTo(currentBullet.endX, currentBullet.endY);
             this.players[currentBullet.ownerId].arms.animations.play("attack")
             console.log('attack')
@@ -302,7 +318,7 @@ export default class extends Phaser.State {
       ////////////////////////////////////////////////
       // Disconnect from server
       ////////////////////////////////////////////////
-      this.socket.on('disconnect', ()=>{
+      this.socket.on('disconnect', () => {
         console.log("[DISCONNECT] USER_2_SERVER");
       });
       ////////////////////////////////////////////////      
@@ -312,13 +328,13 @@ export default class extends Phaser.State {
 
   render() {
     if (__DEV__) {
-         this.game.debug.text('Active Bullets: ' + this.bulletPool.countLiving() + ' / ' + this.bulletPool.total, 32, 32);
+      this.game.debug.text('Active Bullets: ' + this.bulletPool.countLiving() + ' / ' + this.bulletPool.total, 32, 32);
       // this.game.debug.spriteInfo(this.player, 32, 32)
       this.game.debug.text('fps: ' + this.game.time.fps || '--', 32, 140);
       // if (this.player) {
       //   this.game.debug.body(this.player);
       // }
-      if (this.enemyGroup) {
+      if (this.playerGroup) {
         for (let i in this.players) {
           this.game.debug.body(this.players[i]);
         }
@@ -335,17 +351,17 @@ export default class extends Phaser.State {
   update() {
 
 
-    this.game.physics.arcade.overlap(this.enemyGroup, this.bulletPool, this.clientBulletOverlapHandler, this.bulletProcessCallback ,this);
-    
+    this.game.physics.arcade.overlap(this.playerGroup, this.bulletPool, this.clientBulletOverlapHandler, this.bulletProcessCallback, this);
+
 
   }
 
   clientBulletOverlapHandler(player, bullet) {
-   
+
     ////////////////////////////////////////
     // Favor client shot someone else
-    if( bullet.player_id == this.player.id ) {
-      console.log( bullet.player_id, "[HIT]", player.id);
+    if (bullet.player_id == this.player.id) {
+      console.log(bullet.player_id, "[HIT]", player.id);
       let hitPlayerInfo = {
         dealerId: this.player.id,
         takerId: player.id
@@ -367,8 +383,8 @@ export default class extends Phaser.State {
     let isProcessable = false;
     /////////////////////////////////////
     // Check if the bullet is killed
-    isProcessable = ( bullet.alive && bullet.exists && bullet.visible ) ? true : false;
-    isProcessable = ( player.id == bullet.player_id ) ? false: true;
+    isProcessable = (bullet.alive && bullet.exists && bullet.visible) ? true : false;
+    isProcessable = (player.id == bullet.player_id) ? false : true;
     return isProcessable;
   }
 
@@ -376,11 +392,5 @@ export default class extends Phaser.State {
 
   }
 
-  // enemyBulletCollisionHandle(player, bullet) {
 
-  //   // bullet.kill()
-  //   // player.death()
-  //   // this.socket.emit('kill_player',);
-  //   // console.log('hit');
-  // }
 }
