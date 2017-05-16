@@ -8,10 +8,6 @@ var cors = require('cors')
 var Player = require('./player');
 
 
-// app.use('/', express.static(__dirname + '/client'));
-// app.get('/', function (req, res) {
-//     res.sendfile(__dirname + '/client/index.html');
-// });
 app.use(cors())
 app.use(function(req, res, next) {
    res.header("Access-Control-Allow-Origin", "*");

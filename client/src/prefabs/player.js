@@ -11,13 +11,21 @@ export default class Player extends Phaser.Sprite {
         asset,
         id
     }) {
-        super(game, x, y, asset)
+        super(game, x, y, 'blank_48x48')
         // this.game.add.sprite(x, y,this);
         this.game.add.existing(this);
         // this.animations.play("down", 4, true);
-        this.animations.add("idle", [0, 1, 2, 3, 4], 12, true);
-        this.animations.add("run", [5, 6, 7, 8, 9], 12, true);
-        this.animations.play("idle", true);
+           this.character = this.game.make.sprite(0, 0, asset)
+        this.character.anchor.setTo(0.5)
+     
+        this.character.animations.add("idle", [0, 1, 2, 3, 4], 12, true);
+        this.character.animations.add("run", [5, 6, 7, 8, 9], 12, true);
+        this.character.animations.play("idle");
+        
+        this.character.smoothed = false;
+        this.addChild(this.character);
+
+
         // this.enemy_info = enemy_info
         this.anchor.setTo(0.5)
         this.setup()

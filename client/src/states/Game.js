@@ -236,13 +236,13 @@ export default class extends Phaser.State {
 
             if(Math.abs(new_x-old_x) > threshold || Math.abs(new_y-old_y) > threshold ){
               // console.log('walk',new_x,old_x,updating_player.animations.name )
-              if(updating_player.animations.name !== 'run'){
+              if(updating_player.character.animations.name !== 'run'){
                 // console.log('walk',new_x,old_x,updating_player.animations.name )
-                updating_player.animations.play("run")
+                updating_player.character.animations.play("run")
               }
             }else{
               // console.log('idle',new_x,old_x,updating_player.animations.name )
-              updating_player.animations.play("idle")
+              updating_player.character.animations.play("idle")
             }
               
 
@@ -315,9 +315,9 @@ export default class extends Phaser.State {
          this.game.debug.text('Active Bullets: ' + this.bulletPool.countLiving() + ' / ' + this.bulletPool.total, 32, 32);
       // this.game.debug.spriteInfo(this.player, 32, 32)
       this.game.debug.text('fps: ' + this.game.time.fps || '--', 32, 140);
-      if (this.player) {
-        this.game.debug.body(this.player);
-      }
+      // if (this.player) {
+      //   this.game.debug.body(this.player);
+      // }
       if (this.enemyGroup) {
         for (let i in this.players) {
           this.game.debug.body(this.players[i]);

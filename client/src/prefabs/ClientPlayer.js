@@ -22,13 +22,28 @@ export default class ClientPlayer extends Phaser.Sprite {
         asset,
         socket
     }) {
-        super(game, x, y, asset)
+
+        super(game, x, y, 'blank_48x48')
+
         // this.game.add.sprite(x, y,this);
+        
+
         this.game.add.existing(this);
         // this.animations.play("down", 4, true);
-        this.animations.add("idle", [0, 1, 2, 3, 4], 12, true);
-        this.animations.add("run", [5, 6, 7, 8, 9], 12, true);
-        this.animations.play("idle");
+    
+        this.character = this.game.make.sprite(0, 0, asset)
+        this.character.anchor.setTo(0.5)
+     
+        this.character.animations.add("idle", [0, 1, 2, 3, 4], 12, true);
+        this.character.animations.add("run", [5, 6, 7, 8, 9], 12, true);
+        this.character.animations.play("idle");
+        
+        this.character.smoothed = false;
+        this.addChild(this.character);
+
+
+
+
 
         this.socket = socket
         this.current_cmd_action = CMD_ACTION
@@ -83,9 +98,12 @@ export default class ClientPlayer extends Phaser.Sprite {
 
     setup() {
 
+        console.log(this.width,this.height,'check')
+        console.log(this.character.width,this.character.height,'char')
         this.game.physics.enable(this, Phaser.Physics.ARCADE)
         this.body.setSize(32, 48, 6, 0)
         this.body.collideWorldBounds = true
+        
 
     }
    
