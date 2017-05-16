@@ -43,8 +43,9 @@ export default class ClientPlayer extends Phaser.Sprite {
 
         this.indicator = this.game.make.sprite(-2, -30, 'indicator')
         this.indicator.anchor.setTo(0.5)
-        this.addChild(this.indicator);
         this.indicator.smoothed = false;
+        this.addChild(this.indicator);
+
 
 
         this.arrow = this.game.make.sprite(0, 0, 'arrow');
@@ -84,9 +85,6 @@ export default class ClientPlayer extends Phaser.Sprite {
         this.arms.animations.play("idle");
         this.arms.smoothed = false;
         this.addChild(this.arms);
-
-
-
 
 
 
@@ -160,10 +158,10 @@ export default class ClientPlayer extends Phaser.Sprite {
         // Horizontal
         if (this.cursors.left.isDown || this.leftButton.isDown) {
             direction.x = -1;
-            //this.scale.x = -1;
+
         } else if (this.cursors.right.isDown || this.rightButton.isDown) {
             direction.x = 1;
-            //this.scale.x = 1;
+
         }
 
         return direction;
