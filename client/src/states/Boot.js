@@ -14,7 +14,7 @@ export default class extends Phaser.State {
 
     this.scale.pageAlignHorizontally = true;
 
-    this.scale.pageAlignVertically = true;
+    //this.scale.pageAlignVertically = true;
 
     //screen size will be set automatically
 

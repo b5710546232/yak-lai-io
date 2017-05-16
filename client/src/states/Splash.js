@@ -29,6 +29,9 @@ export default class extends Phaser.State {
     this.game.load.tilemap('tilemap', 'assets/map/map_01.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.image('tiles', 'assets/map/tile-sheet-yak.png');
 
+
+    this.load.image('arrow', 'assets/sprites/fixed-arrow.png');
+
   }
 
   create() {

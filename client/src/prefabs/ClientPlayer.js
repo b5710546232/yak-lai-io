@@ -41,8 +41,20 @@ export default class ClientPlayer extends Phaser.Sprite {
         this.character.smoothed = false;
         this.addChild(this.character);
 
+        this.indicator = this.game.make.sprite(-2, -30, 'indicator')
+        this.indicator.anchor.setTo(0.5)
+        this.addChild(this.indicator);
+        this.indicator.smoothed = false;
 
 
+        this.arrow = this.game.make.sprite(0, 0, 'arrow');
+        //this.arrow = this.game.add.sprite(0,0,'arrow');
+        this.arrow.anchor.y = 0.5;
+        this.arrow.anchor.x = 0.3;
+        this.arrow.smoothed = false;
+        this.arrow.allowRotation = false;
+        this.arrow.fixedToCamer = false;
+        this.addChild(this.arrow);
 
 
         this.socket = socket
@@ -72,6 +84,13 @@ export default class ClientPlayer extends Phaser.Sprite {
         this.arms.animations.play("idle");
         this.arms.smoothed = false;
         this.addChild(this.arms);
+
+
+
+
+
+
+
 
         this.direction = {
             x: 0,
@@ -141,10 +160,10 @@ export default class ClientPlayer extends Phaser.Sprite {
         // Horizontal
         if (this.cursors.left.isDown || this.leftButton.isDown) {
             direction.x = -1;
-            this.scale.x = -1;
+            //this.scale.x = -1;
         } else if (this.cursors.right.isDown || this.rightButton.isDown) {
             direction.x = 1;
-            this.scale.x = 1;
+            //this.scale.x = 1;
         }
 
         return direction;
@@ -209,6 +228,10 @@ export default class ClientPlayer extends Phaser.Sprite {
                 this.arms.animations.play('idle')
             }
         }
+
+        let newx = this.game.input.worldX - this.x
+        let newy = this.game.input.worldY - this.y
+        this.arrow.rotation = this.game.physics.arcade.angleToXY(this.arrow, newx, newy)
     }
 
     sendDirection() {

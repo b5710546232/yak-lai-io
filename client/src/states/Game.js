@@ -266,7 +266,7 @@ export default class extends Phaser.State {
 
             //////////////////////////////////////////
             // Find horizontal direction
-            updating_player.scale.x = (current_player.x > updating_player.x) ? 1 : -1;
+            updating_player.character.scale.x = (current_player.x > updating_player.x) ? 1 : -1;
 
             if (updating_player.alive && updating_player.exists && updating_player.visible) {
               //////////////////////////////////////////
