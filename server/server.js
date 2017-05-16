@@ -8,13 +8,17 @@ var cors = require('cors')
 
 var Player = require('./player');
 
+// 1600-32-8 = 1522
+
+const TILE_WIDTH = 1560
+const TILE_HEIGHT = 1552-8
 
 app.use(cors())
-app.use(function(req, res, next) {
-   res.header("Access-Control-Allow-Origin", "*");
-   res.header('Access-Control-Allow-Methods','GET,PUT,POST,DELETE')
-   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-   next();
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
 });
 
 var colors = ['#999999', '#CCCCCC', '#00FF00', '#0000FF', '#FF0000', '#FFFF00'];
@@ -70,12 +74,12 @@ io.on('connection', function (socket) {
         // Add new player to current snapshot
         /////////////////////////////////////////
         snapshot.players[user.id] = new Player(
-                                            user.id, 
-                                            user.username,
-                                            colors[randomPosition(0, colors.length)],
-                                            randomPosition(area.minX, area.maxX),
-                                            randomPosition(area.minY, area.maxY)
-                                            );
+            user.id,
+            user.username,
+            colors[randomPosition(0, colors.length)],
+            randomPosition(area.minX, area.maxX),
+            randomPosition(area.minY, area.maxY)
+        );
         // console.log('[NEW PLAYER] ID = ', user.id, ' Username = ', user.username, "PLAYER_INFO", snapshot.players[user.id]);
         //////////////////////////////////////////
     });
@@ -100,10 +104,18 @@ io.on('connection', function (socket) {
         ////////////////////////////////////////////////
         let player = snapshot.players[playerData.id];
         // console.log("[MOVE]", player.x);
-        if(player) {
+        if (player) {
             // console.log("[BEFORE] Update player's position: (", player.x, ",", player.y,")");
-            player.x += playerData.direction.x * player.speed * INTERVAL / 1000;
-            player.y += playerData.direction.y * player.speed * INTERVAL / 1000;
+            let check_horizontal_bound =    player.x + playerData.direction.x * player.speed * INTERVAL / 1000 <= TILE_WIDTH 
+                                            && player.x + playerData.direction.x * player.speed * INTERVAL / 1000 >= 32+8
+
+            let check_vertical_bound =  player.y + playerData.direction.y * player.speed * INTERVAL / 1000 <= TILE_HEIGHT && player.y +
+                                            playerData.direction.y * player.speed * INTERVAL / 1000 >=32 + 16
+            if (check_horizontal_bound && check_vertical_bound) {
+                player.x += playerData.direction.x * player.speed * INTERVAL / 1000;
+                player.y += playerData.direction.y * player.speed * INTERVAL / 1000;
+            }
+
             // console.log("[AFTER] Update player's position: (", player.x, ",", player.y,")");
         }
     });
@@ -136,14 +148,14 @@ io.on('connection', function (socket) {
     });
 
     socket.on('kill_player', function (user) {
-        
+
         /////////////////////////////////////////////
         // Kill shot player 
         // Broadcast killed player
         //////////////////////////////////////////////
         // users[me.id] = user;
         // socket.emit('kill_player', user);
-        
+
         //////////////////////////////////////////////
         // Update snapshot that someone has been shot
         //////////////////////////////////////////////
@@ -164,9 +176,9 @@ io.on('connection', function (socket) {
         socket.broadcast.emit('logout', me.id);
     });
 
-    socket.on('playArea', function(play_area) {
+    socket.on('playArea', function (play_area) {
         // console.log("[PLAY_AREA_SIZE] Received", play_area);
-        if( area.maxX == 0 && area.maxY == 0 ) {
+        if (area.maxX == 0 && area.maxY == 0) {
             area.minX = play_area.offset;
             area.minY = play_area.offset;
             area.maxX = play_area.x_max - play_area.offset;
@@ -175,16 +187,16 @@ io.on('connection', function (socket) {
         }
     });
 
-    socket.on('hitPlayer', function(hitPlayerInfo) {
+    socket.on('hitPlayer', function (hitPlayerInfo) {
         let dealer = snapshot.players[hitPlayerInfo.dealerId];
         let taker = snapshot.players[hitPlayerInfo.takerId];
-        if( dealer && taker ) {
-           taker.health -= dealer.damage;
-           taker.isAlive = (taker.health <= 0) ? false : true;
+        if (dealer && taker) {
+            taker.health -= dealer.damage;
+            taker.isAlive = (taker.health <= 0) ? false : true;
         }
     });
 
-    socket.on('respawn', function(playerInfo) {
+    socket.on('respawn', function (playerInfo) {
         let player = snapshot.players[playerInfo.id];
         player.x = randomPosition(area.minX, area.maxX);
         player.y = randomPosition(area.minY, area.maxY);
@@ -201,7 +213,7 @@ function randomIntInc(low, high) {
     return Math.floor(Math.random() * (high - low + 1) + low);
 }
 
-setInterval(()=>{
+setInterval(() => {
     //////////////////////////////////////////
     // Update server snapshot
     //////////////////////////////////////////

@@ -211,7 +211,6 @@ export default class ClientPlayer extends Phaser.Sprite {
     }
 
     update() {
-
         if (this.isAlive) {
             this.direction = this.handleInputs();
             if (game.input.activePointer.isDown) {

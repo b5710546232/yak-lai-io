@@ -4,7 +4,7 @@ import Phaser from 'phaser'
 export default class extends Phaser.State {
   init(param) {
     // console.log('boot-parm',param);
-    this.stage.backgroundColor = '#EDEEC9'
+    this.stage.backgroundColor = '#00000'
     // this.fontsReady = false
     // this.fontsLoaded = this.fontsLoaded.bind(this)
 
