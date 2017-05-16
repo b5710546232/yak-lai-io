@@ -3,7 +3,7 @@ import Phaser from 'phaser'
 
 import Player from '../prefabs/player'
 import Enemy from '../prefabs/enemy'
-import ClientPlayer from '../prefabs/clientPlayer'
+import ClientPlayer from '../prefabs/ClientPlayer'
 
 import io from 'socket.io-client'
 
