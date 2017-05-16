@@ -1,4 +1,3 @@
-'use strict';
 import Phaser from 'phaser'
 
 const PLAYER_SPEED = 100

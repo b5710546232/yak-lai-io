@@ -1,4 +1,3 @@
-"use strict";
 var express = require('express');
 var app = require('express')();
 var server = require('http').Server(app);
@@ -201,7 +200,7 @@ function randomIntInc(low, high) {
     return Math.floor(Math.random() * (high - low + 1) + low);
 }
 
-var setInterval = (()=>{
+setInterval(()=>{
     //////////////////////////////////////////
     // Update server snapshot
     //////////////////////////////////////////
@@ -215,6 +214,6 @@ var setInterval = (()=>{
     // io.emit('update_snapshot', snapshot);
 }, INTERVAL)
 
-var randomPosition = (min, max) => {
+randomPosition = (min, max) => {
     return Math.floor(Math.random() * (max - min) + min);
 }
