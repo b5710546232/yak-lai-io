@@ -11,6 +11,8 @@ import Pool from '../utils/pool'
 
 import Config from '../config'
 
+import { centerGameObjects } from '../utils'
+
 export default class extends Phaser.State {
     preload() {
             this.load.image('bg', 'assets/images/bg.png');
@@ -18,7 +20,9 @@ export default class extends Phaser.State {
             //this.game.add.plugin(PhaserInput.Plugin);
         }
     create(){
-        this.add.image(0, 0, 'bg');
+        this.menuBg = this.add.image(this.game.world.centerX, this.game.world.centerY, 'bg')
+        centerGameObjects([this.menuBg])
+        
         
         var login = this.game.add.text(game.width / 2, 100, 'Log in to this awesome game!', {
                 font: '30px Arial',
