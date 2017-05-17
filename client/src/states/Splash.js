@@ -7,7 +7,7 @@ export default class extends Phaser.State {
   preload() {
     this.loaderBg = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'loaderBg')
     this.loaderBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'loaderBar')
-    centerGameObjects([this.loaderBg, this.loaderBar])
+    // centerGameObjects([this.loaderBg, this.loaderBar])
 
     this.load.setPreloadSprite(this.loaderBar)
     //
@@ -26,11 +26,14 @@ export default class extends Phaser.State {
     this.load.audio('throw_sfx', ('assets/sound/throwing_sound.wav'));
 
 
+  
     this.game.load.tilemap('tilemap', 'assets/map/map_01.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.image('tiles', 'assets/map/tile-sheet-yak.png');
 
 
     this.load.image('arrow', 'assets/sprites/fixed-arrow.png');
+
+   
 
   }
 

@@ -8,15 +8,18 @@ export default class extends Phaser.State {
     // this.fontsReady = false
     // this.fontsLoaded = this.fontsLoaded.bind(this)
 
+    if (!this.game.device.desktop) {
+      this.game.scale.startFullScreen(false);
+    }
+
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-
-    //have the game centered horizontally
-
+    // this.scale.minWidth = 240;
+    // this.scale.minHeight = 170;
+    // this.scale.maxWidth = 2880;
+    // this.scale.maxHeight = 1920;
     this.scale.pageAlignHorizontally = true;
 
-    //this.scale.pageAlignVertically = true;
-
-    //screen size will be set automatically
+    // this.scale.refresh();
 
     // 
     this.game.stage.disableVisibilityChange = true;
@@ -44,7 +47,7 @@ export default class extends Phaser.State {
 
   render() {
     // if (this.fontsReady) {
-      this.state.start('Splash')
+    this.state.start('Splash')
     // }
   }
 
