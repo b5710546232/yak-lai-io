@@ -39,7 +39,7 @@ export default class extends Phaser.State {
         
         centerGameObjects([this.menuBg,this.login_text])
         
-          /*var user = this.game.add.inputField(game.width / 2 - 85, 180 - 17, {
+          var user = this.game.add.inputField(game.width / 2 - 85, 180 - 17, {
                 font: '18px Arial',
                 fill: '#212121',
                 fillAlpha: 0,
@@ -55,7 +55,7 @@ export default class extends Phaser.State {
                 zoom: true
             });
             user.setText('prefilled name');
-            user.blockInput = false;*/
+            user.blockInput = false;
         
     }
 }
