@@ -21,14 +21,14 @@ export default class extends Phaser.State {
         }
     create(){
         this.menuBg = this.add.image(this.game.world.centerX, this.game.world.centerY, 'bg')
-        centerGameObjects([this.menuBg])
         
         
-        var login = this.game.add.text(game.width / 2, 100, 'Log in to this awesome game!', {
+        
+        this.login_text = this.game.add.text(game.width / 2, 100, 'Log in to this awesome game!', {
                 font: '30px Arial',
                 fill: '#ffffff'
             });
-            login.anchor.set(0.5);
+
         
       
         
@@ -37,7 +37,7 @@ export default class extends Phaser.State {
             this.game.state.start('Game');
         });
         
- 
+        centerGameObjects([this.menuBg,this.login_text])
         
           /*var user = this.game.add.inputField(game.width / 2 - 85, 180 - 17, {
                 font: '18px Arial',
