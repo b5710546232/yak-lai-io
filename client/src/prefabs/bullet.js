@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 
 const BULLET_SPEED = 400
-const LIFE_TIME = 1000
+const LIFE_TIME = 700
 
 export default class Bullet extends Phaser.Sprite {
     constructor({
@@ -29,7 +29,8 @@ export default class Bullet extends Phaser.Sprite {
         this.scale.y = 2
         this.smoothed = false;
     }
-    initial(){
+    reset(x, y) {
+        super.reset(x, y)
         this.isBreak = false;
     }
 
@@ -37,7 +38,7 @@ export default class Bullet extends Phaser.Sprite {
     fireTo(x, y) {
         this.game.physics.arcade.moveToXY(this, x, y, BULLET_SPEED);
         // this.game.time.events.add(Phaser.Timer.SECOND * 1, this.resetBullet, this);
-        this.lifespan = 1000;
+        this.lifespan = LIFE_TIME;
 
     }
     resetBullet() {
@@ -45,6 +46,13 @@ export default class Bullet extends Phaser.Sprite {
     }
     setPlayerId(id) {
         this.player_id = id;
+    }
+    break() {
+        this.isBreak = true;
+        this.emitter.x = this.x
+        this.emitter.y = this.y
+        this.emitter.start(true, 1000, null, 10);
+        this.kill();
     }
 
     toJson() {
@@ -66,10 +74,8 @@ export default class Bullet extends Phaser.Sprite {
     update() {
         if (this.lifespan < 0) {
             if (!this.isBreak) {
-                this.emitter.x = this.x
-                this.emitter.y = this.y
-                this.emitter.start(true, 1000, null, 10);
-                this.isBreak = true;
+                this.break()
+
             }
 
         }

@@ -14,13 +14,13 @@ export default class Player extends Phaser.Sprite {
         // this.game.add.sprite(x, y,this);
         this.game.add.existing(this);
         // this.animations.play("down", 4, true);
-           this.character = this.game.make.sprite(0, 0, asset)
+        this.character = this.game.make.sprite(0, 0, asset)
         this.character.anchor.setTo(0.5)
-     
+
         this.character.animations.add("idle", [0, 1, 2, 3, 4], 12, true);
         this.character.animations.add("run", [5, 6, 7, 8, 9], 12, true);
         this.character.animations.play("idle");
-        
+
         this.character.smoothed = false;
         this.addChild(this.character);
 
@@ -37,7 +37,7 @@ export default class Player extends Phaser.Sprite {
 
         this.arms = this.game.make.sprite(0, 0, 'yak_arm')
         this.arms.anchor.setTo(0.5)
-        this.arms.animations.add("attack", [0, 1, 2, 3, 4,5], 16,false);
+        this.arms.animations.add("attack", [0, 1, 2, 3, 4, 5], 16, false);
         this.arms.animations.add("idle", [5], 1);
         this.arms.animations.play("idle");
         this.arms.smoothed = false;
@@ -78,7 +78,7 @@ export default class Player extends Phaser.Sprite {
         this.animations.play("run");
     }
 
-    
+
     shootTo(x, y) {
         if (this.lastBulletShotAt === undefined) this.lastBulletShotAt = 0
         if (this.game.time.now - this.lastBulletShotAt < this.SHOT_DELAY) return
@@ -102,7 +102,7 @@ export default class Player extends Phaser.Sprite {
             width: this.width
         };
     }
-     death(){
+    death() {
         this.x = Math.floor((Math.random() * 10) + 1)
         this.y = Math.floor((Math.random() * 10) + 1)
         this.isAlive = false;
@@ -133,8 +133,8 @@ export default class Player extends Phaser.Sprite {
 
 
     update() {
-        if(this.arms.animations.name == 'attack'){
-            if(this.arms.animations.currentAnim.isFinished){
+        if (this.arms.animations.name == 'attack') {
+            if (this.arms.animations.currentAnim.isFinished) {
                 this.arms.animations.play('idle')
             }
         }

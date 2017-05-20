@@ -390,7 +390,7 @@ export default class extends Phaser.State {
       }
       this.socket.emit("hitPlayer", hitPlayerInfo);
     }
-    bullet.kill();
+    bullet.break();
     // //////////////////////////////////////
     // // Someone else shot someone else
     // else if( bullet.player_id !== this.player.id) {

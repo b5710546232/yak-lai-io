@@ -24,7 +24,6 @@ export default class Pool extends Phaser.Group {
             this.add(obj, true)
         }
         obj.reset(x, y)
-        obj.initial()
         return obj
     }
 }
