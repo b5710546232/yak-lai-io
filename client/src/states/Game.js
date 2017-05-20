@@ -366,11 +366,12 @@ export default class extends Phaser.State {
 
   }
   bulletCollisionProcess(bulletA, bulletB) {
-    bulletA.kll();
-    bulletB.kill();
     this.emitter.x = bulletA.x
     this.emitter.y = bulletA.y
     this.emitter.start(true, 1000, null, 10);
+    bulletA.kll();
+    bulletB.kill();
+
 
   }
 
