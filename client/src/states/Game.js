@@ -361,15 +361,13 @@ export default class extends Phaser.State {
 
 
     this.game.physics.arcade.overlap(this.playerGroup, this.bulletPool, this.clientBulletOverlapHandler, this.bulletProcessCallback, this);
-    this.game.physics.arcade.overlap(this.bulletPool, this.bulletPool, this.bulletCollisionProcess, null, this);
+    this.game.physics.arcade.overlap(this.bulletPool,null, this.bulletCollisionProcess, null, this);
 
 
   }
   bulletCollisionProcess(bulletA, bulletB) {
     bulletA.break()
     bulletB.break()
-
-
   }
 
   clientBulletOverlapHandler(player, bullet) {
