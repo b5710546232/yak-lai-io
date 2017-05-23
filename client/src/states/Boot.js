@@ -4,7 +4,6 @@ import phaserInput from '../plugins/phaser-input'
 
 export default class extends Phaser.State {
   init(param) {
-
     // plugin
     this.add.plugin(phaserInput.Plugin)
 
