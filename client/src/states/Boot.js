@@ -13,17 +13,14 @@ export default class extends Phaser.State {
     // this.fontsReady = false
     // this.fontsLoaded = this.fontsLoaded.bind(this)
 
-    if (!this.game.device.desktop) {
-      this.game.scale.startFullScreen(false);
-    }
+    // if (!this.game.device.desktop) {
+    //   this.game.scale.startFullScreen(false);
+    // }
 
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-    // this.scale.minWidth = 240;
-    // this.scale.minHeight = 170;
-    // this.scale.maxWidth = 2880;
-    // this.scale.maxHeight = 1920;
     this.scale.pageAlignHorizontally = true;
-
+    this.game.scale.setScreenSize = true;
+    this.game.scale.refresh();
     // this.scale.refresh();
 
     // 
