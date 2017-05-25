@@ -12,7 +12,8 @@ import Pool from '../utils/pool'
 
 import Config from '../config'
 
-import phaserTouchControl from '../plugins/phaser-touch-control'
+// import phaserTouchControl from '../plugins/phaser-touch-control'
+import phaserTouchControl from '../plugins/vjoy'
 
 
 export default class extends Phaser.State {
@@ -21,10 +22,16 @@ export default class extends Phaser.State {
 
   create() {
 
-    this.game.virtualInput = this.add.plugin(phaserTouchControl)
-    this.game.virtualInput.inputEnable();
 
-    
+
+
+    // this.game.virtualShooter = this.add.plugin(phaserTouchControl)
+    // this.game.virtualShooter.configImage({ compass: 'compass', touch: 'touch_shoot' })
+    // this.game.virtualShooter.inputEnable({ width: this.camera.width, side: 'RIGHT' });
+
+    // this.game.virtualShooter = this.add.plugin(phaserTouchControl)
+
+
     const bannerText = 'yak-lai'
     let banner = this.add.text(this.world.centerX, this.game.height - 80, bannerText)
     banner.font = 'Bangers'
@@ -48,10 +55,23 @@ export default class extends Phaser.State {
 
     this.groundLayer = this.map.createLayer('GroundLayer');
     this.wallLayer = this.map.createLayer('WallLayer');
+    this.game.virtualInput = this.add.plugin(phaserTouchControl)
+    this.game.virtualInput.configImage({ compass: 'compass', touch: 'touch' })
+    this.game.virtualInput.inputEnable()
+    // virtual-joy
+    if (!this.game.device.desktop) {
+      // this.game.virtualInput.inputEnable({ width: this.camera.width, side: 'LEFT' });
+      this.game.shootButton = this.add.button(700, 300, 'touch_shoot');
+
+      this.game.shootButton.fixedToCamera = true;
+    }
 
 
     //Change the world size to match the size of this layer
     this.groundLayer.resizeWorld();
+
+
+
 
 
     // particle
@@ -231,6 +251,15 @@ export default class extends Phaser.State {
               this.players[current_player.id] = clientPlayer;
               this.player = clientPlayer;
 
+              if (!this.game.device.desktop) {
+
+                this.game.shootButton.onInputDown.add(() => {
+                  if (this.player) {
+                    this.player.shoot()
+                  }
+                })
+              }
+
               // set camera follow player
               this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON)
 
@@ -367,9 +396,29 @@ export default class extends Phaser.State {
 
   update() {
 
+    // if (this.input.activePointer.position.x + this.camera.x >= this.camera.x + this.camera.width / 2 && this.game.virtualInput) {
+    //   // shoot
+    //   // this.game.virtualInput.inputDisable();
+    //   // this.game.virtualShooter.inputEnable();
+    //   console.log('shoot')
+
+    // }
+    // else {
+    //   // this.game.virtualShooter.inputDisable();
+    //   if (!this.inputEnable) {
+    //     this.inputEnable = true;
+    //     console.log('hello-enable')
+    //     this.game.virtualInput.inputEnable({ width: this.camera.width / 2, side: 'LEFT' });
+    //   }
+    //   console.log('move')
+    //   // move
+
+    // }
 
     this.game.physics.arcade.overlap(this.playerGroup, this.bulletPool, this.clientBulletOverlapHandler, this.bulletProcessCallback, this);
-    this.game.physics.arcade.overlap(this.bulletPool,this.bulletPool, this.bulletCollisionProcess, null, this);
+    this.game.physics.arcade.overlap(this.bulletPool, this.bulletPool, this.bulletCollisionProcess, null, this);
+
+
 
 
   }

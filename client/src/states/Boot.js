@@ -5,13 +5,27 @@ import phaserInput from '../plugins/phaser-input'
 
 export default class extends Phaser.State {
   init(param) {
+
+    //  this.game.input.maxPointers = 6;
+    if (!this.game.device.desktop) {
+       this.game.input.maxPointers = 2;
+      //   this.game.input.multiInputOverride = Phaser.Input.TOUCH_OVERRIDES_MOUSE;
+      // this.game.input.addPointer();
+      // this.game.input.addPointer();
+      // this.game.pointer1 = game.input.pointer1;
+      // this.game.pointer2 = game.input.pointer2;
+
+      // this.game.input.multiInputOverride = this.game.input.TOUCH_OVERRIDES_MOUSE
+    }
+
+
     // plugin
     this.add.plugin(phaserInput.Plugin)
     // console.log('touch',phaserTouchControl.)
 
 
 
-    
+
 
     // this.add.plugin(phaserTouchControl)
 

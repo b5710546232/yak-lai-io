@@ -31,6 +31,8 @@ export default class extends Phaser.State {
     this.load.image('compass', 'assets/sprites/joy_base.png');
     this.load.image('touch_segment', 'assets/sprites/blank_48x48.png');
     this.load.image('touch', 'assets/sprites/joy_hat.png');
+    this.load.image('touch_shoot', 'assets/sprites/shootButton.png');
+
 
 
   

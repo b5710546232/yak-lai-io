@@ -13,7 +13,7 @@ body {
   -ms-user-select: none;
 }
 
-#content canvas {
+canvas {
   
   image-rendering: optimizeSpeed;
   /* Legal fallback */
