@@ -55,15 +55,17 @@ export default class extends Phaser.State {
 
     this.groundLayer = this.map.createLayer('GroundLayer');
     this.wallLayer = this.map.createLayer('WallLayer');
+
+
+    // virtual-joy
     this.game.virtualInput = this.add.plugin(phaserTouchControl)
     this.game.virtualInput.configImage({ compass: 'compass', touch: 'touch' })
-    this.game.virtualInput.inputEnable()
-    // virtual-joy
     if (!this.game.device.desktop) {
       // this.game.virtualInput.inputEnable({ width: this.camera.width, side: 'LEFT' });
       this.game.shootButton = this.add.button(700, 300, 'touch_shoot');
 
       this.game.shootButton.fixedToCamera = true;
+      this.game.virtualInput.inputEnable()
     }
 
 
