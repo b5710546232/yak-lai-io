@@ -12,11 +12,19 @@ import Pool from '../utils/pool'
 
 import Config from '../config'
 
+import phaserTouchControl from '../plugins/phaser-touch-control'
+
+
 export default class extends Phaser.State {
 
   preload() { }
 
   create() {
+
+    this.game.virtualInput = this.add.plugin(phaserTouchControl)
+    this.game.virtualInput.inputEnable();
+
+    
     const bannerText = 'yak-lai'
     let banner = this.add.text(this.world.centerX, this.game.height - 80, bannerText)
     banner.font = 'Bangers'

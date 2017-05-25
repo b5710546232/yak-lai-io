@@ -149,17 +149,17 @@ export default class ClientPlayer extends Phaser.Sprite {
 
         let direction = { x: 0, y: 0 };
         // Vertical
-        if (this.cursors.up.isDown || this.upButton.isDown) {
+        if (this.cursors.up.isDown || this.upButton.isDown || this.game.virtualInput.cursors.up) {
             direction.y = -1;
-        } else if (this.cursors.down.isDown || this.downButton.isDown) {
+        } else if (this.cursors.down.isDown || this.downButton.isDown || this.game.virtualInput.cursors.down) {
             direction.y = 1;
         }
 
         // Horizontal
-        if (this.cursors.left.isDown || this.leftButton.isDown) {
+        if (this.cursors.left.isDown || this.leftButton.isDown || this.game.virtualInput.cursors.left ) {
             direction.x = -1;
 
-        } else if (this.cursors.right.isDown || this.rightButton.isDown) {
+        } else if (this.cursors.right.isDown || this.rightButton.isDown || this.game.virtualInput.cursors.right  ) {
             direction.x = 1;
 
         }

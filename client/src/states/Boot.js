@@ -1,11 +1,19 @@
 import Phaser from 'phaser'
 // import WebFont from 'webfontloader'
 import phaserInput from '../plugins/phaser-input'
+// import phaserTouchControl from '../plugins/phaser-touch-control'
 
 export default class extends Phaser.State {
   init(param) {
     // plugin
     this.add.plugin(phaserInput.Plugin)
+    // console.log('touch',phaserTouchControl.)
+
+
+
+    
+
+    // this.add.plugin(phaserTouchControl)
 
 
     // console.log('boot-parm',param);

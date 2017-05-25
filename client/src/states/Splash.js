@@ -28,6 +28,11 @@ export default class extends Phaser.State {
     this.load.audio('throw_sfx', ('assets/sound/throwing_sound.wav'));
 
 
+    this.load.image('compass', 'assets/sprites/joy_base.png');
+    this.load.image('touch_segment', 'assets/sprites/blank_48x48.png');
+    this.load.image('touch', 'assets/sprites/joy_hat.png');
+
+
   
     this.game.load.tilemap('tilemap', 'assets/map/map_01.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.image('tiles', 'assets/map/tile-sheet-yak.png');
