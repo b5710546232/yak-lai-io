@@ -15,8 +15,8 @@ import { centerGameObjects } from '../utils'
 
 export default class extends Phaser.State {
     preload() {
-            this.load.image('bg', 'assets/images/bg.png');
-            this.load.spritesheet('btn','assets/images/btn_clean.png');
+            this.load.image('bg', 'assets/images/background.png');
+            this.load.spritesheet('btn','assets/images/start_button.png');
             //this.game.add.plugin(PhaserInput.Plugin);
         }
     create(){
@@ -24,38 +24,42 @@ export default class extends Phaser.State {
         
         
         
-        this.login_text = this.game.add.text(game.width / 2, 100, 'Log in to this awesome game!', {
-                font: '30px Arial',
+        this.login_text = this.game.add.text(game.width / 2, 100, '', {
+                font: '30px Barrio',
                 fill: '#ffffff'
             });
 
         
       
         
-        var submitBtn = this.add.button(this.world.centerX-95,this.world.centerY + 100, 'btn',function(){
-            console.log('press');
-            this.game.state.start('Game');
-        });
-        
         centerGameObjects([this.menuBg,this.login_text])
         
-          var user = this.game.add.inputField(game.width / 2 - 85, 180 - 17, {
-                font: '18px Arial',
-                fill: '#212121',
-                fillAlpha: 0,
-                fontWeight: 'bold',
-                width: 150,
-                max: 20,
-                padding: 8,
-                borderWidth: 1,
-                borderColor: '#000',
-                borderRadius: 6,
-                placeHolder: 'Username',
-                textAlign: 'center',
-                zoom: true
-            });
-            user.setText('prefilled name');
-            user.blockInput = false;
-        
+          var user = this.game.add.inputField(game.width / 2 -180, game.height/2+30, {
+              font: '20px Barrio',
+              fill: '#212325',
+              width: 300,
+              padding: 12,
+              borderWidth: 3,
+              borderColor: '#101213',
+              backgroundColor: '#f0f0f0',
+              min: 1,
+              align: 'center',
+              max: 25,
+              zoom: false,
+              placeHolder: 'INSERT YOUR NAME HERE'
+        });
+          user.blockInput = false;
+
+
+          var submitBtn = this.add.button(this.world.centerX - 140, this.world.centerY + 100, 'btn', function () {
+
+              this.game.userName = user.value;
+              console.log(this.game.userName);
+              this.game.state.start('Game');
+
+          });
+
     }
+
+
 }

@@ -17,6 +17,8 @@ export default class extends Phaser.State {
   preload() { }
 
   create() {
+      console.log(this.game.userName);
+
     const bannerText = 'yak-lai'
     let banner = this.add.text(this.world.centerX, this.game.height - 80, bannerText)
     banner.font = 'Bangers'
