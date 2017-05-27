@@ -130,10 +130,11 @@ export default class extends Phaser.State {
 
     });
     this.respawnButton.onInputDown.add(() => {
-      if (this.player) {
-        this.closeDeadScene()
+      if (this.player && this.player.isDie) {
         this.player.isDie = false
         this.player.alpha = 1
+        this.player.respawn()
+        this.closeDeadScene()
       }
     })
     this.deadscreen.fixedToCamera = true;
