@@ -56,6 +56,7 @@ export default class Player extends Phaser.Sprite {
 
         this.username = username;
         this.score = score;
+
     }
     create() {
 

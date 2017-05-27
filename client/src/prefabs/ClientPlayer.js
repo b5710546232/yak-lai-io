@@ -113,6 +113,12 @@ export default class ClientPlayer extends Phaser.Sprite {
         this.game.time.events.loop(Phaser.Timer.SECOND * 0.100, this.sendDirection, this);
 
         this.score = score;
+
+        this.scoretext = this.game.add.text(this.game.camera.width - 50, 40, this.score);
+        this.scoretext.fill = '#FFFFFF';
+        this.scoretext.align = 'center';
+        this.scoretext.fixedToCamera = true;
+        // this.
     }
     death() {
         this.x = Math.floor((Math.random() * 10) + 1)
