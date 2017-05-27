@@ -39,15 +39,19 @@ class Player {
     }
 
     killPlayer() {
-        if(this.score) {
-            this.score += SCORE_TYPES.KILL;
-        }
+                console.log(this.username, "'s before score =", this.score);
+        // if(this.score) {
+        // }
+        this.score += SCORE_TYPES.KILL;
+        console.log(this.username, "'s after score =", this.score);
     }
 
     collect() {
-        if(this.score) {
-            this.score += SCORE_TYPES.COLLECT;
-        }
+        console.log(this.username, "'s before score =", this.score);
+        // if(this.score) {
+        // }
+        this.score += SCORE_TYPES.COLLECT;
+        console.log(this.username, "'s after score =", this.score);
     }
 
 }

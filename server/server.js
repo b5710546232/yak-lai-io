@@ -221,20 +221,23 @@ io.on('connection', function (socket) {
             taker.isAlive = (taker.health <= 0) ? false : true;
             if(!taker.isAlive) {
                 dealer.killPlayer();
+                taker.x = randomPosition(area.minX, area.maxX);
+                taker.y = randomPosition(area.minY, area.maxY);
             }
         }
     });
 
     socket.on('respawn', function (playerInfo) {
         let player = snapshot.players[playerInfo.id];
-        player.x = randomPosition(area.minX, area.maxX);
-        player.y = randomPosition(area.minY, area.maxY);
+        // player.x = randomPosition(area.minX, area.maxX);
+        // player.y = randomPosition(area.minY, area.maxY);
         player.reset();
     });
 
     socket.on('collect', function (playerInfo) {
         let player = snapshot.players[playerInfo.id];
         player.collect();
+        // console.log(player.username, "'s score =", player.score);
     });
 
 });
