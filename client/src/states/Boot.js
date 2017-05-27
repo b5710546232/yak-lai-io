@@ -1,12 +1,33 @@
 import Phaser from 'phaser'
 // import WebFont from 'webfontloader'
 import phaserInput from '../plugins/phaser-input'
+// import phaserTouchControl from '../plugins/phaser-touch-control'
 
 export default class extends Phaser.State {
   init(param) {
 
+    //  this.game.input.maxPointers = 6;
+    if (!this.game.device.desktop) {
+       this.game.input.maxPointers = 2;
+      //   this.game.input.multiInputOverride = Phaser.Input.TOUCH_OVERRIDES_MOUSE;
+      // this.game.input.addPointer();
+      // this.game.input.addPointer();
+      // this.game.pointer1 = game.input.pointer1;
+      // this.game.pointer2 = game.input.pointer2;
+
+      // this.game.input.multiInputOverride = this.game.input.TOUCH_OVERRIDES_MOUSE
+    }
+
+
     // plugin
     this.add.plugin(phaserInput.Plugin)
+    // console.log('touch',phaserTouchControl.)
+
+
+
+
+
+    // this.add.plugin(phaserTouchControl)
 
 
     // console.log('boot-parm',param);
@@ -14,17 +35,14 @@ export default class extends Phaser.State {
     // this.fontsReady = false
     // this.fontsLoaded = this.fontsLoaded.bind(this)
 
-    if (!this.game.device.desktop) {
-      this.game.scale.startFullScreen(false);
-    }
+    // if (!this.game.device.desktop) {
+    //   this.game.scale.startFullScreen(false);
+    // }
 
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-    // this.scale.minWidth = 240;
-    // this.scale.minHeight = 170;
-    // this.scale.maxWidth = 2880;
-    // this.scale.maxHeight = 1920;
     this.scale.pageAlignHorizontally = true;
-
+    this.game.scale.setScreenSize = true;
+    this.game.scale.refresh();
     // this.scale.refresh();
 
     // 

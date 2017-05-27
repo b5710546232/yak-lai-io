@@ -149,22 +149,29 @@ export default class ClientPlayer extends Phaser.Sprite {
 
         let direction = { x: 0, y: 0 };
         // Vertical
-        if (this.cursors.up.isDown || this.upButton.isDown) {
+        if (this.cursors.up.isDown || this.upButton.isDown || this.game.virtualInput.cursors.up) {
             direction.y = -1;
-        } else if (this.cursors.down.isDown || this.downButton.isDown) {
+        } else if (this.cursors.down.isDown || this.downButton.isDown || this.game.virtualInput.cursors.down) {
             direction.y = 1;
         }
 
         // Horizontal
-        if (this.cursors.left.isDown || this.leftButton.isDown) {
+        if (this.cursors.left.isDown || this.leftButton.isDown || this.game.virtualInput.cursors.left) {
             direction.x = -1;
 
-        } else if (this.cursors.right.isDown || this.rightButton.isDown) {
+        } else if (this.cursors.right.isDown || this.rightButton.isDown || this.game.virtualInput.cursors.right) {
             direction.x = 1;
 
         }
 
         return direction;
+    }
+
+    disableInputMove() {
+        this.game.virtualInput.inputDisable()
+    }
+    enableInputMove() {
+        this.game.virtualInput.inputEnable();
     }
 
     initInput() {
@@ -197,6 +204,17 @@ export default class ClientPlayer extends Phaser.Sprite {
         let _x = this.game.input.worldX
         let _y = this.game.input.worldY
 
+        // mobile
+        if (this.game.device.desktop) {
+            _x = this.game.input.worldX
+            _y = this.game.input.worldY
+        } else {
+            _x = this.x + this.game.virtualInput.deltaX
+            _y = this.y + this.game.virtualInput.deltaY
+        }
+
+
+
         // let x = _x*100/Math.sqrt((_x*_x)+(_y*_y))
         // let y = _y*100/Math.sqrt((_x*_x)+(_y*_y))
         let x = _x
@@ -213,8 +231,10 @@ export default class ClientPlayer extends Phaser.Sprite {
     update() {
         if (this.isAlive) {
             this.direction = this.handleInputs();
-            if (game.input.activePointer.isDown) {
+            if (this.game.input.activePointer.isDown && this.game.device.desktop) {
                 this.shoot();
+            } else {
+                // handle for mobile
             }
         } else {
             this.respawn();
@@ -228,7 +248,17 @@ export default class ClientPlayer extends Phaser.Sprite {
 
         let newx = this.game.input.worldX - this.x
         let newy = this.game.input.worldY - this.y
-        this.arrow.rotation = this.game.physics.arcade.angleToXY(this.arrow, newx, newy)
+
+        //test in desk-top
+        if (this.game.device.desktop) {
+            this.arrow.rotation = this.game.physics.arcade.angleToXY(this.arrow, newx, newy)
+        }
+        // mobile
+        else {
+            this.arrow.rotation = this.game.physics.arcade.angleToXY(this.arrow, this.game.virtualInput.deltaX, this.game.virtualInput.deltaY)
+            // this.arrow.rotation = this.game.physics.arcade.angleToXY(this.arrow, newx, newy)
+        }
+
     }
 
     sendDirection() {

@@ -4,3 +4,5 @@ export default {
   localStorageName: 'phaseres6webpack',
   worldSize:2
 }
+
+// 1,920 x 1,080

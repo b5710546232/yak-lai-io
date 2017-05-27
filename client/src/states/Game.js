@@ -13,12 +13,20 @@ import Pool from '../utils/pool'
 
 import Config from '../config'
 
+// import phaserTouchControl from '../plugins/phaser-touch-control'
+import phaserTouchControl from '../plugins/vjoy'
+
+
 export default class extends Phaser.State {
 
   preload() { }
 
   create() {
       console.log(this.game.userName);
+
+
+
+
 
     const bannerText = 'yak-lai'
     let banner = this.add.text(this.world.centerX, this.game.height - 80, bannerText)
@@ -30,20 +38,47 @@ export default class extends Phaser.State {
     banner.anchor.setTo(0.5)
 
 
+
+    // particle
+
+
+
     this.map = this.game.add.tilemap('tilemap');
     this.map.addTilesetImage('tile-sheet-yak', 'tiles');
 
-    
+
+
 
     this.groundLayer = this.map.createLayer('GroundLayer');
     this.wallLayer = this.map.createLayer('WallLayer');
 
- 
+
+    // virtual-joy
+    this.game.virtualInput = this.add.plugin(phaserTouchControl)
+    this.game.virtualInput.configImage({ compass: 'compass', touch: 'touch' })
+    if (!this.game.device.desktop) {
+      // this.game.virtualInput.inputEnable({ width: this.camera.width, side: 'LEFT' });
+      this.game.shootButton = this.add.button(700, 300, 'touch_shoot');
+
+      this.game.shootButton.fixedToCamera = true;
+      this.game.virtualInput.inputEnable()
+    }
+
+
     //Change the world size to match the size of this layer
     this.groundLayer.resizeWorld();
 
 
-    
+
+
+
+    // particle
+
+    this.emitter = this.game.add.emitter(0, 0, 30);
+    this.emitter.makeParticles("square_16x16");
+    this.emitter.maxParticleScale = 0.1 * 5;
+    this.emitter.minParticleScale = 0.05 * 5;
+
 
 
     // set bound of world
@@ -52,12 +87,7 @@ export default class extends Phaser.State {
 
     this.setEventHandlers();
     // this.game.add.e
-    this.t_bullet = new Bullet({
-      game: this,
-      x: 30,
-      y: 30
-    });
-    this.game.add.existing(this.t_bullet);
+
 
     // for show fps
     this.game.time.advancedTiming = true;
@@ -83,7 +113,8 @@ export default class extends Phaser.State {
     let entity_data = {
       game: this.game,
       x: 0,
-      y: 0
+      y: 0,
+      particle: this.emitter
     }
     this.bulletPool = new Pool(this.game, Bullet, 2, entity_data)
   }
@@ -91,7 +122,7 @@ export default class extends Phaser.State {
 
     let target = 'http://localhost:3000'
     // let target = 'http://128.199.253.181:3000/'
-    
+
     this.socket = io.connect(target);
     this.socket.on('connect', () => {
 
@@ -220,6 +251,15 @@ export default class extends Phaser.State {
               });
               this.players[current_player.id] = clientPlayer;
               this.player = clientPlayer;
+
+              if (!this.game.device.desktop) {
+
+                this.game.shootButton.onInputDown.add(() => {
+                  if (this.player) {
+                    this.player.shoot()
+                  }
+                })
+              }
 
               // set camera follow player
               this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON)
@@ -374,7 +414,6 @@ export default class extends Phaser.State {
           this.game.debug.body(this.players[i]);
         }
       }
-      this.game.debug.body(this.t_bullet)
 
     }
 
@@ -385,12 +424,39 @@ export default class extends Phaser.State {
 
   update() {
 
+    // if (this.input.activePointer.position.x + this.camera.x >= this.camera.x + this.camera.width / 2 && this.game.virtualInput) {
+    //   // shoot
+    //   // this.game.virtualInput.inputDisable();
+    //   // this.game.virtualShooter.inputEnable();
+    //   console.log('shoot')
+
+    // }
+    // else {
+    //   // this.game.virtualShooter.inputDisable();
+    //   if (!this.inputEnable) {
+    //     this.inputEnable = true;
+    //     console.log('hello-enable')
+    //     this.game.virtualInput.inputEnable({ width: this.camera.width / 2, side: 'LEFT' });
+    //   }
+    //   console.log('move')
+    //   // move
+
+    // }
+
     // Player w/ bullet
     this.game.physics.arcade.overlap(this.playerGroup, this.bulletPool, this.clientBulletOverlapHandler, this.bulletProcessCallback, this);
+
+    // Bullet w/ bullet
+    this.game.physics.arcade.overlap(this.bulletPool, this.bulletPool, this.bulletCollisionProcess, null, this);
 
     // Player w/ collectible
     this.game.physics.arcade.overlap(this.playerGroup, this.collectibleGroup, this.collectibleOverlapHandler, null, this);
 
+  }
+  bulletCollisionProcess(bulletA, bulletB) {
+    // still not collsiion
+    bulletA.break()
+    bulletB.break()
   }
 
   clientBulletOverlapHandler(player, bullet) {
@@ -398,6 +464,10 @@ export default class extends Phaser.State {
     ////////////////////////////////////////
     // Favor client shot someone else
     if (bullet.player_id == this.player.id) {
+      this.emitter.x = bullet.x
+      this.emitter.y = bullet.y
+      this.emitter.start(true, 1000, null, 10);
+
       console.log(bullet.player_id, "[HIT]", player.id);
       let hitPlayerInfo = {
         dealerId: this.player.id,
@@ -405,7 +475,7 @@ export default class extends Phaser.State {
       }
       this.socket.emit("hitPlayer", hitPlayerInfo);
     }
-    bullet.kill();
+    bullet.break();
     // //////////////////////////////////////
     // // Someone else shot someone else
     // else if( bullet.player_id !== this.player.id) {
