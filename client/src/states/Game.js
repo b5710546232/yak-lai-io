@@ -25,19 +25,19 @@ import {
 export default class extends Phaser.State {
   init() {
     this.user_info = this.game.user_info
-    console.log('user_info', this.user_info.uid)
+    // console.log('user_info', this.user_info.uid)
   }
   preload() {}
 
   create() {
 
 
-    console.log(this.game.userName);
+    // console.log(this.game.userName);
 
 
 
     // this.game.virtualShooter = this.add.plugin(phaserTouchControl)
-    console.log(this.game.userName);
+
 
 
     const bannerText = 'yak-lai'
@@ -155,7 +155,7 @@ export default class extends Phaser.State {
 
 
     // this.topScoreText = gameSelf.add.text(gameSelf.camera.width - 250, 100 + (index * 25), topScore.name + ' : ' + topScore.score);
-    this.topScoreText = this.game.add.text(this.game.camera.width - 250, 50, ' Top 5 Score');
+    this.topScoreText = this.game.add.text(this.game.camera.width - 250, 20, ' Top 5 Score');
     this.topScoreText.fill = "#FFFFFF";
     this.topScoreText.align = "center";
     this.topScoreText.font = '10px Barrio'
@@ -198,7 +198,7 @@ export default class extends Phaser.State {
 
 
     // let target = 'http://localhost:3000';
-    let target = 'http://192.168.1.4:3000';
+    let target = 'http://128.199.253.181:3000';
 
     this.socket = io.connect(target);
     this.socket.on('connect', () => {
@@ -514,7 +514,7 @@ export default class extends Phaser.State {
               x: currentCollectible.x,
               y: currentCollectible.y,
               id: currentCollectible.id,
-              asset: 'rock',
+              asset: 'ball',
               isCollected: currentCollectible.isCollected
             });
             this.collectibles[collectible.id] = collectible;
@@ -568,6 +568,31 @@ export default class extends Phaser.State {
   update() {
 
 
+    ////////////////////////////
+    // Receive top 5 scores from firebase
+    let gameSelf = this.game;
+    this.game.database.ref('users/').orderByChild('score').limitToLast(5).
+    on('value', (snapshot) => {
+      let index = 5;
+      this.topScore = 'Top 5 Score \n'
+      snapshot.forEach((user) => {
+        let topScore = user.val();
+        // console.log(user.val());
+        this.topScore += topScore.name + ' : ' + topScore.score + "\n"
+        // this.topScoreText = gameSelf.add.text(gameSelf.camera.width - 250, 100 + (index * 25), topScore.name + ' : ' + topScore.score);
+        // this.topScoreText.fill = "#FFFFFF";
+        // this.topScoreText.align = "center";
+        // this.topScoreText.font = '10px Barrio'
+        // this.topScoreText.stroke = '#000000';
+        // this.topScoreText.strokeThickness = 2;
+        // this.topScoreText.fixedToCamera = true;
+
+        index--;
+
+      });
+      this.topScoreText.setText(this.topScore || 'Top 5 Score')
+    });
+
     // if (this.input.activePointer.position.x + this.camera.x >= this.camera.x + this.camera.width / 2 && this.game.virtualInput) {
     //   // shoot
     //   // this.game.virtualInput.inputDisable();
@@ -615,7 +640,8 @@ export default class extends Phaser.State {
         this.emitter.y = bullet.y
         this.emitter.start(true, 1000, null, 10);
 
-        console.log(bullet.player_id, "[HIT]", player.id);
+        // console.log(bullet.player_id, "[HIT]", player.id);
+
         let hitPlayerInfo = {
           dealerId: this.player.id,
           takerId: player.id
@@ -631,30 +657,7 @@ export default class extends Phaser.State {
         "score": player.score
       });
 
-      ////////////////////////////
-      // Receive top 5 scores from firebase
-      let gameSelf = this.game;
-      this.game.database.ref('users/').orderByChild('score').limitToLast(5).
-      on('value', (snapshot) => {
-        let index = 5;
-        this.topScore = 'Top 5 Score \n'
-        snapshot.forEach((user) => {
-          let topScore = user.val();
-          // console.log(user.val());
-          this.topScore += topScore.name + ' : ' + topScore.score + "\n"
-          // this.topScoreText = gameSelf.add.text(gameSelf.camera.width - 250, 100 + (index * 25), topScore.name + ' : ' + topScore.score);
-          // this.topScoreText.fill = "#FFFFFF";
-          // this.topScoreText.align = "center";
-          // this.topScoreText.font = '10px Barrio'
-          // this.topScoreText.stroke = '#000000';
-          // this.topScoreText.strokeThickness = 2;
-          // this.topScoreText.fixedToCamera = true;
 
-          index--;
-
-        });
-        this.topScoreText.setText(this.topScore||'Top 5 Score')
-      });
     }
     // //////////////////////////////////////
     // // Someone else shot someone else
@@ -682,7 +685,7 @@ export default class extends Phaser.State {
   collectibleOverlapHandler(player, collectible) {
 
     if (player && this.player && (player.id == this.player.id)) {
-      console.log("Player collected ", collectible);
+      // console.log("Player collected ", collectible);
       let playerInfo = {
         id: this.player.id,
         collectibleId: collectible.id
