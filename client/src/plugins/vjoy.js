@@ -88,6 +88,14 @@
 
         this.pointer = pointer;
 
+
+        var RIGHT = 1,
+            LEFT = 0;
+        // if (Math.floor(this.game.input.x / (this.game.width / 2)) === RIGHT) {
+
+        // }
+        // else{
+
         this.imageGroup.forEach(function (e) {
             e.visible = true;
             e.bringToTop();
@@ -100,6 +108,8 @@
         this.preUpdate = setDirection.bind(this);
 
         initialPoint = this.input.activePointer.position.clone();
+        // }
+
     };
 
     var removeCompass = function () {
@@ -119,8 +129,7 @@
         this.pointer = null;
     };
 
-    var empty = function () {
-    };
+    var empty = function () {};
 
     var setDirection = function () {
         if (!this.isInTheZone(this.pointer)) {
@@ -138,8 +147,9 @@
         var deltaX = this.pointer.position.x - initialPoint.x;
         var deltaY = this.pointer.position.y - initialPoint.y;
 
-        this.deltaX = this.pointer.position.x - initialPoint.x;
-        this.deltaY = this.pointer.position.y - initialPoint.y;
+        this.deltaX = Math.round(deltaX)
+        this.deltaY = Math.round(deltaY)
+
 
 
 
@@ -153,6 +163,8 @@
             }
         }
 
+
+
         var angle = initialPoint.angle(this.pointer.position);
 
         if (d > maxDistanceInPixels) {
@@ -164,19 +176,24 @@
         this.speed.y = parseInt((deltaY / maxDistanceInPixels) * 100 * -1, 10);
 
 
+
         this.cursors.up = (deltaY < 0);
         this.cursors.down = (deltaY > 0);
         this.cursors.left = (deltaX < 0);
         this.cursors.right = (deltaX > 0);
 
 
-        
+
 
 
         this.imageGroup.forEach(function (e, i) {
             e.cameraOffset.x = initialPoint.x + (deltaX) * i / 3;
             e.cameraOffset.y = initialPoint.y + (deltaY) * i / 3;
         }, this);
+        // var deltaX = this.pointer.position.x - initialPoint.x;
+        // var deltaY = this.pointer.position.y - initialPoint.y;
+
+        console.log('del')
     };
 
     Phaser.Plugin.VJoy.prototype.preUpdate = empty;

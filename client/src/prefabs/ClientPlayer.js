@@ -256,9 +256,8 @@ export default class ClientPlayer extends Phaser.Sprite {
             } else {
                 // handle for mobile
             }
-        } 
-        else {
-            if(this.isDie){
+        } else {
+            if (this.isDie) {
                 this.respawn();
             }
         }
@@ -278,8 +277,15 @@ export default class ClientPlayer extends Phaser.Sprite {
         }
         // mobile
         else {
-            this.arrow.rotation = this.game.physics.arcade.angleToXY(this.arrow, this.game.virtualInput.deltaX, this.game.virtualInput.deltaY)
-            // this.arrow.rotation = this.game.physics.arcade.angleToXY(this.arrow, newx, newy)
+            let newx = this.game.virtualInput.deltaX
+            let newy = this.game.virtualInput.deltaY
+
+            if(newx && newy){
+                this.arrow.rotation = this.game.physics.arcade.angleToXY(this.arrow, newx, newy)
+            }
+
+
+            // this.arrow.rotation = this.game.physics.arcade.angleToXY(this.arrow, this.game.virtualInput.deltaX, this.game.virtualInput.deltaY)
         }
 
     }
@@ -298,10 +304,10 @@ export default class ClientPlayer extends Phaser.Sprite {
         let playerInfo = {
             id: this.id
         };
-        if(!this.isAlive){
-            this.socket.emit('respawn', playerInfo);
-            console.log('res-spawn')
-        }
+        // if(!this.isAlive){
+        this.socket.emit('respawn', playerInfo);
+        console.log('res-spawn')
+        // }
         // if(this.respawnButton.isDown) {
         //     let playerInfo = {
         //         id: this.id

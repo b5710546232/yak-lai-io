@@ -11,7 +11,9 @@ import Pool from '../utils/pool'
 
 import Config from '../config'
 
-import { centerGameObjects } from '../utils'
+import {
+    centerGameObjects
+} from '../utils'
 
 export default class extends Phaser.State {
     preload() {
@@ -20,8 +22,8 @@ export default class extends Phaser.State {
         //this.game.add.plugin(PhaserInput.Plugin);
     }
     create() {
-        this.world.resize(this.game.width,this.game.height)
-        this.menuBg = this.add.image(game.width / 2 ,game.height / 2, 'bg')
+        this.world.resize(this.game.width, this.game.height)
+        this.menuBg = this.add.image(game.width / 2, game.height / 2, 'bg')
         this.login_text = this.game.add.text(game.width / 2, 100, '', {
             font: '30px Barrio',
             fill: '#ffffff'
@@ -33,15 +35,19 @@ export default class extends Phaser.State {
         centerGameObjects([this.menuBg, this.login_text])
 
         var user = this.game.add.inputField(game.width / 2 - 180, game.height / 2 + 30, {
-            font: '20px Barrio',
+
             fill: '#212325',
+            font: '20px Barrio',
             width: 300,
             padding: 12,
             borderWidth: 3,
             borderColor: '#101213',
             backgroundColor: '#f0f0f0',
             min: 1,
+            borderRadius: 6,
             align: 'center',
+
+
             max: 25,
             zoom: false,
             placeHolder: 'INSERT YOUR NAME HERE'
@@ -91,7 +97,10 @@ export default class extends Phaser.State {
 
         if (username.length > 0) {
             console.log('hello')
-            this.game.database.ref('users/' + username).set({ "name": username, "score": 0 });
+            this.game.database.ref('users/' + username).set({
+                "name": username,
+                "score": 0
+            });
         }
 
         if (username != null && username.length > 0) {
@@ -109,8 +118,7 @@ export default class extends Phaser.State {
             });
             return;
 
-        }
-        else {
+        } else {
 
         }
 

@@ -66,7 +66,7 @@ export default class extends Phaser.State {
     })
     if (!this.game.device.desktop) {
       // this.game.virtualInput.inputEnable({ width: this.camera.width, side: 'LEFT' });
-      this.game.shootButton = this.add.button(700, 300, 'touch_shoot');
+      this.game.shootButton = this.add.button(700, 350, 'touch_shoot');
 
       this.game.shootButton.fixedToCamera = true;
       this.game.virtualInput.inputEnable()
@@ -275,6 +275,7 @@ export default class extends Phaser.State {
               if (!this.game.device.desktop) {
 
                 this.game.shootButton.onInputDown.add(() => {
+                  // let tween = this.game.add.tween(this.game.shootButton).to({x:1.5,y:1.5})
                   if (this.player) {
                     this.player.shoot()
                   }
