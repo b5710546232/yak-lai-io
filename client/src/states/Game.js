@@ -446,9 +446,9 @@ export default class extends Phaser.State {
                   updating_player.alpha = 1;
                   if (this.players[current_player.id].alpha == 1) {
                     if (this.player.id == current_player.id) {
-                      this.player.respawn()
+                      // this.player.respawn()
                     }
-                    this.players[current_player.id].isDie = false
+                    // this.players[current_player.id].isDie = false
                   }
 
                   if (current_player.id === this.player.id) {
