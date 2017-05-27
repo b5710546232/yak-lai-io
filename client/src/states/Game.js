@@ -114,11 +114,9 @@ export default class extends Phaser.State {
 
     });
     this.respawnButton.onInputDown.add(() => {
-      if (this.player && this.player.isDie) {
-        this.player.isDie = false
-        this.player.alpha = 1
-        this.player.respawn()
-      }
+      this.player.isDie = false
+      this.player.alpha = 1
+      this.player.respawn()
       this.closeDeadScene()
     })
     this.deadscreen.fixedToCamera = true;
@@ -486,7 +484,7 @@ export default class extends Phaser.State {
           let currentPlayer = this.players[current_player.id];
           currentPlayer.isAlive = current_player.isAlive;
           if (!currentPlayer.isAlive) {
-            if (currentPlayer.alive) {
+            // if (currentPlayer.alive) {
               console.log(this.players[current_player.id].id, "died.");
               this.players[current_player.id].alpha = 0;
               if (this.players[current_player.id].alpha === 0) {
@@ -495,7 +493,7 @@ export default class extends Phaser.State {
                   this.showDeadScene()
                 }
               }
-            }
+            // }
           }
           ///////////////////////////////////////////////////
           // Respawn player is alive again

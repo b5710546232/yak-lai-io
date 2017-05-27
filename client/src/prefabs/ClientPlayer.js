@@ -314,6 +314,7 @@ export default class ClientPlayer extends Phaser.Sprite {
         let playerInfo = {
             id: this.id
         };
+        this.isAlive = true
         // if(!this.isAlive){
         this.socket.emit('respawn', playerInfo);
         console.log('res-spawn')
