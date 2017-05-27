@@ -18,9 +18,12 @@ export default class Player extends Phaser.Sprite {
 
 
 
-        this.textname = this.game.make.text(0, 40 , username);
+        this.textname = this.game.make.text(0, 40, username);
         this.textname.fill = '#FFFFFF'
         this.textname.align = 'center'
+        this.textname.font = '16px Barrio'
+        this.textname.stroke = '#000000';
+        this.textname.strokeThickness = 3;
         this.textname.anchor.setTo(0.5)
         this.addChild(this.textname);
 

@@ -73,6 +73,7 @@ io.on('connection', function (socket) {
     var me = false;
 
     socket.on('new_player', function (user) {
+        me = user;
         // 1.
         ///////////////////////////////////////////////////////
         // Broadcast about this new player to other players
@@ -82,7 +83,7 @@ io.on('connection', function (socket) {
         //     socket.emit('new_player', users[k]);
         // }
 
-        // users[me.id] = me;
+        users[me.id] = me;
         // console.log('user-id', me.id);
         // socket.broadcast.emit('new_player', user);
         //////////////////////////////////////////
