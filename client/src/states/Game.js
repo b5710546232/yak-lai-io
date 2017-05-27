@@ -40,6 +40,8 @@ export default class extends Phaser.State {
 
 
 
+    
+
     const bannerText = 'yak-lai'
     let banner = this.add.text(this.world.centerX, this.game.height - 80, bannerText)
     banner.font = 'Bangers'
@@ -160,6 +162,24 @@ export default class extends Phaser.State {
     this.topScoreText.stroke = '#000000';
     this.topScoreText.strokeThickness = 2;
     this.topScoreText.fixedToCamera = true;
+
+
+
+      ////////////////////////////
+    // init  Receive top 5 scores from firebase
+
+    this.game.database.ref('users/').orderByChild('score').limitToLast(5).
+    on('value', (snapshot) => {
+      let index = 5;
+      this.topScore = 'Top 5 Score \n'
+      snapshot.forEach((user) => {
+        let topScore = user.val();
+        this.topScore += topScore.name + ' : ' + topScore.score + "\n"
+        index--;
+
+      });
+      this.topScoreText.setText(this.topScore || 'Top 5 Score')
+    });
 
 
   }
@@ -568,23 +588,6 @@ export default class extends Phaser.State {
 
   update() {
 
-
-    ////////////////////////////
-    // Receive top 5 scores from firebase
-    let gameSelf = this.game;
-    this.game.database.ref('users/').orderByChild('score').limitToLast(5).
-    on('value', (snapshot) => {
-      let index = 5;
-      this.topScore = 'Top 5 Score \n'
-      snapshot.forEach((user) => {
-        let topScore = user.val();
-        this.topScore += topScore.name + ' : ' + topScore.score + "\n"
-        index--;
-
-      });
-      this.topScoreText.setText(this.topScore || 'Top 5 Score')
-    });
-
     // if (this.input.activePointer.position.x + this.camera.x >= this.camera.x + this.camera.width / 2 && this.game.virtualInput) {
     //   // shoot
     //   // this.game.virtualInput.inputDisable();
@@ -643,11 +646,25 @@ export default class extends Phaser.State {
       bullet.break();
 
       //////////////////////////
-      // Send score to firebase
-      this.game.database.ref('users/' + player.username).set({
-        "name": player.username || "",
-        "score": player.score || 0
+      // // Send score to firebase
+      // this.game.database.ref('users/' + player.username).set({
+      //   "name": player.username || "",
+      //   "score": player.score || 0
+      // });
+
+
+    this.game.database.ref('users/').orderByChild('score').limitToLast(5).
+    on('value', (snapshot) => {
+      let index = 5;
+      this.topScore = 'Top 5 Score \n'
+      snapshot.forEach((user) => {
+        let topScore = user.val();
+        this.topScore += topScore.name + ' : ' + topScore.score + "\n"
+        index--;
+
       });
+      this.topScoreText.setText(this.topScore || 'Top 5 Score')
+    });
 
 
     }
