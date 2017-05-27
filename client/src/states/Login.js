@@ -17,8 +17,6 @@ import {
 
 export default class extends Phaser.State {
     preload() {
-        this.load.image('bg', 'assets/images/background.png');
-        this.load.spritesheet('btn', 'assets/images/start_button.png');
         //this.game.add.plugin(PhaserInput.Plugin);
     }
     create() {

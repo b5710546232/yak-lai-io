@@ -18,10 +18,15 @@ export default class extends Phaser.State {
     this.load.image('indicator', 'assets/sprites/indicator.png')
     this.load.image('blank_48x48', 'assets/sprites/blank_48x48.png')
     this.load.image('square_16x16', 'assets/sprites/square_16x16.png')
+    this.load.image('bg', 'assets/images/background.png');
+
+    this.load.image('dead_scene', 'assets/images/dead_scene.png')
     
 
+    this.load.spritesheet('cont', 'asset/images/continue_button.png')
     this.load.spritesheet('player', 'assets/sprites/player_sheet.png', 48, 48)
     this.load.spritesheet('yak_arm', 'assets/sprites/yak-arms.png', 48, 48)
+    this.load.spritesheet('btn', 'assets/images/start_button.png');
 
     this.load.audio('soundtrack', ('assets/sound/soundtrack.mp3'));
     this.load.audio('dead_sfx', ('assets/sound/dead_sound.mp3'));
