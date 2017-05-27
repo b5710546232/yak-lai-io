@@ -47,6 +47,7 @@ export default class extends Phaser.State {
   }
 
   create() {
-    this.state.start('Game')
+    // this.state.start('Game')
+    this.state.start('Login')
   }
 }

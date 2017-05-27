@@ -48,6 +48,9 @@ export default class extends Phaser.State {
     // 
     this.game.stage.disableVisibilityChange = true;
 
+    // setup database
+    this.game.database = firebase.database();
+
   }
 
   preload() {

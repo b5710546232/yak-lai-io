@@ -73,7 +73,6 @@ io.on('connection', function (socket) {
     var me = false;
 
     socket.on('new_player', function (user) {
-        me = user;
         // 1.
         ///////////////////////////////////////////////////////
         // Broadcast about this new player to other players
@@ -95,6 +94,7 @@ io.on('connection', function (socket) {
         if(snapshot.players[user.id]) {
             socket.emit('exist', true);
         } else {
+            me = user;
             snapshot.players[user.id] = new Player(
                 user.id,
                 user.username,
@@ -188,6 +188,7 @@ io.on('connection', function (socket) {
     });
 
     socket.on('disconnect', function () {
+        console.log(me);
         if (!me) {
             return false;
         }
