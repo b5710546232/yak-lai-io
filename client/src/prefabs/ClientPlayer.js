@@ -13,6 +13,7 @@ const CMD_ACTION = {
     MOVE_RIGHT: 'MOVE_RIGHT',
 }
 
+
 export default class ClientPlayer extends Phaser.Sprite {
 
     constructor({
@@ -51,8 +52,8 @@ export default class ClientPlayer extends Phaser.Sprite {
         this.character = this.game.make.sprite(0, 0, asset)
         this.character.anchor.setTo(0.5)
 
-        this.character.animations.add("idle", [0, 1, 2, 3, 4], 12, true);
-        this.character.animations.add("run", [5, 6, 7, 8, 9], 12, true);
+        this.character.animations.add("idle", [0, 1, 2, 3, 4], 10, true);
+        this.character.animations.add("run", [5, 6, 7, 8, 9], 10, true);
         this.character.animations.play("idle");
 
         this.character.smoothed = false;
@@ -85,7 +86,7 @@ export default class ClientPlayer extends Phaser.Sprite {
         this.setup()
         this.initInput()
 
-        this.SHOT_DELAY = 300
+        this.SHOT_DELAY = 450
         this.NUMBER_OF_BULLETS = 20
 
         this.isAlive = true;
