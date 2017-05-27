@@ -17,6 +17,9 @@ import Config from '../config'
 import phaserTouchControl from '../plugins/vjoy'
 
 
+import { centerGameObjects } from '../utils'
+
+
 export default class extends Phaser.State {
   init() {
     this.user_info = this.game.user_info
@@ -25,6 +28,8 @@ export default class extends Phaser.State {
   preload() { }
 
   create() {
+      
+
     console.log(this.game.userName);
 
 
@@ -112,6 +117,15 @@ export default class extends Phaser.State {
 
     this.collectibles = [];
     this.collectibleGroup = this.game.add.group();
+
+
+    this.deadscreen = this.add.image((game.width / 2) - 250, game.height / 2 - 200, 'dead_scene')
+    this.respawnButton = this.add.button(game.width / 2 - 120, game.height / 2 , 'btn', () => {
+        
+    });
+    this.deadscreen.fixedToCamera = true;
+    this.respawnButton.fixedToCamera = true;
+
   }
 
   initBullets() {
@@ -126,7 +140,7 @@ export default class extends Phaser.State {
   setEventHandlers() {
 
     // let target = 'http://localhost:3000';
-    let target = 'http://192.168.1.3:3000';
+      let target = 'http://192.168.1.4:3001';
     // let target = 'http://128.199.253.181:3000/'
 
     this.socket = io.connect(target);
