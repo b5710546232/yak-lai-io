@@ -20,7 +20,7 @@ export default class extends Phaser.State {
         //this.game.add.plugin(PhaserInput.Plugin);
     }
     create() {
-        this.world.resize(game.width,game.height)
+        this.world.resize(this.game.width,this.game.height)
         this.menuBg = this.add.image(game.width / 2 ,game.height / 2, 'bg')
         this.login_text = this.game.add.text(game.width / 2, 100, '', {
             font: '30px Barrio',
@@ -91,7 +91,7 @@ export default class extends Phaser.State {
 
         if (username.length > 0) {
             console.log('hello')
-            this.game.database.ref('users/' + this.uid).set({ "name": username, "score": 0 });
+            this.game.database.ref('users/' + username).set({ "name": username, "score": 0 });
         }
 
         if (username != null && username.length > 0) {
