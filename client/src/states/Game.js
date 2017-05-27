@@ -362,6 +362,9 @@ export default class extends Phaser.State {
             }
 
             updating_player.score = current_player.score;
+            if(this.player.id == updating_player.id) {
+              updating_player.scoretext.setText(current_player.score);
+            }
           }
 
           /////////////////////////////////////////////////////////
@@ -521,6 +524,14 @@ export default class extends Phaser.State {
       //////////////////////////
       // Send score to firebase
       this.game.database.ref('users/' + player.username).set({ "name": player.username, "score": player.score });
+
+      ////////////////////////////
+      // Receive top 5 scores from firebase
+      let topScores = this.game.database.ref('users/' ).orderByChild('score').limitToLast(1).
+                      once('value').then(function(snapshot) {
+                        console.log("Top 5 scores:", snapshot.val());
+
+                      });
     }
     bullet.break();
     // //////////////////////////////////////
