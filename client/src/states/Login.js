@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-    
+
 import Player from '../prefabs/player'
 import Enemy from '../prefabs/enemy'
 import ClientPlayer from '../prefabs/ClientPlayer'
@@ -15,47 +15,107 @@ import { centerGameObjects } from '../utils'
 
 export default class extends Phaser.State {
     preload() {
-            this.load.image('bg', 'assets/images/bg.png');
-            this.load.spritesheet('btn','assets/images/btn_clean.png');
-            //this.game.add.plugin(PhaserInput.Plugin);
-        }
-    create(){
-        this.menuBg = this.add.image(this.game.world.centerX, this.game.world.centerY, 'bg')
-        
-        
-        
-        this.login_text = this.game.add.text(game.width / 2, 100, 'Log in to this awesome game!', {
-                font: '30px Arial',
-                fill: '#ffffff'
-            });
-
-        
-      
-        
-        var submitBtn = this.add.button(this.world.centerX-95,this.world.centerY + 100, 'btn',function(){
-            console.log('press');
-            this.game.state.start('Game');
-        });
-        
-        centerGameObjects([this.menuBg,this.login_text])
-        
-          var user = this.game.add.inputField(game.width / 2 - 85, 180 - 17, {
-                font: '18px Arial',
-                fill: '#212121',
-                fillAlpha: 0,
-                fontWeight: 'bold',
-                width: 150,
-                max: 20,
-                padding: 8,
-                borderWidth: 1,
-                borderColor: '#000',
-                borderRadius: 6,
-                placeHolder: 'Username',
-                textAlign: 'center',
-                zoom: true
-            });
-            user.setText('prefilled name');
-            user.blockInput = false;
-        
+        this.load.image('bg', 'assets/images/background.png');
+        this.load.spritesheet('btn', 'assets/images/start_button.png');
+        //this.game.add.plugin(PhaserInput.Plugin);
     }
+    create() {
+        this.menuBg = this.add.image(this.game.world.centerX, this.game.world.centerY, 'bg')
+
+
+
+        this.login_text = this.game.add.text(game.width / 2, 100, '', {
+            font: '30px Barrio',
+            fill: '#ffffff'
+        });
+
+
+
+
+        centerGameObjects([this.menuBg, this.login_text])
+
+        var user = this.game.add.inputField(game.width / 2 - 180, game.height / 2 + 30, {
+            font: '20px Barrio',
+            fill: '#212325',
+            width: 300,
+            padding: 12,
+            borderWidth: 3,
+            borderColor: '#101213',
+            backgroundColor: '#f0f0f0',
+            min: 1,
+            align: 'center',
+            max: 25,
+            zoom: false,
+            placeHolder: 'INSERT YOUR NAME HERE'
+        });
+        user.blockInput = false;
+
+
+        var submitBtn = this.add.button(this.world.centerX - 140, this.world.centerY + 100, 'btn', () => {
+
+            this.game.userName = user.value;
+            console.log(this.game.userName);
+            this.login(user.value);
+
+            //   this.game.state.start('Game');
+
+        });
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in.
+                let isAnonymous = user.isAnonymous;
+                let uid = user.uid;
+                console.log('user-id', uid)
+                this.uid = uid;
+
+
+                this.game.current_user = firebase.auth().currentUser;
+                console.log('current-user', this.game.current_user)
+
+
+            } else {
+                firebase.auth().signInAnonymously().catch(function (error) {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    if (errorCode === 'auth/operation-not-allowed') {
+                        alert('You must enable Anonymous auth in the Firebase Console.');
+                    } else {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+
+    }
+    login(username) {
+        // clear input
+
+        if (username.length > 0) {
+            console.log('hello')
+            this.game.database.ref('users/' + this.uid).set({ "name": username, "score": 0 });
+        }
+
+        if (username != null && username.length > 0) {
+            this.game.database.ref('users/' + username).once('value').then((snapshot) => {
+                this.game.current_user.username = username;
+                this.game.user_info = this.game.current_user
+                let user_info = this.game.current_user
+                this.game.state.start('Game', true, false, user_info);
+                return;
+
+            }, (err) => {
+                console.log('err', err)
+            });
+            return;
+
+        }
+        else {
+
+        }
+
+        console.log('error');
+    }
+
+
 }

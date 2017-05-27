@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -9,12 +9,13 @@
     <meta name="MobileOptimized" content="320">
     <meta http-equiv="cleartype" content="on">
     <link rel="stylesheet" href="assets/css/styles.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Barrio" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Barrio">
 </head>
 
 <body>
-
-    <div id="content"></div>
-    <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
     <script>
         // Initialize Firebase
         var config = {
@@ -26,11 +27,18 @@
             messagingSenderId: "550577644997"
         };
         firebase.initializeApp(config);
-
     </script>
+    <div id="content"></div>
     <script src="dist/vendor.bundle.js"></script>
     <script src="dist/bundle.js"></script>
 
 </body>
+
+<style>
+    body {
+        font-family: 'Barrio';
+        font-size: 48px;
+    }
+</style>
 
 </html>

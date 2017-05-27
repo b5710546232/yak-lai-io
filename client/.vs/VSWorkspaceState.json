@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\plugins",
+    "\\src\\prefabs",
+    "\\src\\sprites",
+    "\\src\\states",
+    "\\src\\utils"
+  ],
+  "SelectedNode": "\\src\\states\\Game.js",
+  "PreviewInSolutionExplorer": false
+}

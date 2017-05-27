@@ -17,12 +17,13 @@ import phaserTouchControl from '../plugins/vjoy'
 
 
 export default class extends Phaser.State {
-
+  init(user_info) {
+    this.user_info = user_info
+    console.log('user_info', this.user_info.uid)
+  }
   preload() { }
 
   create() {
-
-
 
 
     // this.game.virtualShooter = this.add.plugin(phaserTouchControl)
@@ -30,6 +31,7 @@ export default class extends Phaser.State {
     // this.game.virtualShooter.inputEnable({ width: this.camera.width, side: 'RIGHT' });
 
     // this.game.virtualShooter = this.add.plugin(phaserTouchControl)
+    console.log(this.game.userName);
 
 
     const bannerText = 'yak-lai'
@@ -121,11 +123,20 @@ export default class extends Phaser.State {
   }
   setEventHandlers() {
 
+
     // let target = 'http://localhost:3000'
     let target = 'http://128.199.253.181:3000/'
 
+
     this.socket = io.connect(target);
     this.socket.on('connect', () => {
+
+
+      this.socket.on('exist', (data) => {
+        if (data) {
+          this.state.start('Login')
+        }
+      });
 
       ///////////////////////////////////////////////
       // Tell server about play area
@@ -152,8 +163,9 @@ export default class extends Phaser.State {
 
       // this.player.setBulletPool(this.bulletPool);
       let playerData = {
-        id: this.socket.io.engine.id,
-        username: this.socket.io.engine.id,
+        // id: this.socket.io.engine.id,
+        id: this.user_info.uid,
+        username: this.user_info.username,
       };
 
       this.socket.emit('new_player', playerData);
@@ -241,7 +253,8 @@ export default class extends Phaser.State {
           // console.log("[ID]", snapshot.players[current_player].username);
           if (!this.players[current_player.id]) {
             // console.log("Is client player" , "from session ", this.socket.io.engine.id, "from server ", current_player.id );
-            if (this.socket.io.engine.id == current_player.id) {
+            // if (this.socket.io.engine.id == current_player.id) {
+            if (this.user_info.uid == current_player.id) {
               console.log("[NEW] Client")
               let clientPlayer = new ClientPlayer({
                 game: this.game,
@@ -369,6 +382,7 @@ export default class extends Phaser.State {
       ////////////////////////////////////////////////
       this.socket.on('disconnect', () => {
         console.log("[DISCONNECT] USER_2_SERVER");
+        this.game.state.start('Login')
       });
       ////////////////////////////////////////////////      
 
