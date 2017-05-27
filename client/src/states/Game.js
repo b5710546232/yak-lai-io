@@ -129,11 +129,9 @@ export default class extends Phaser.State {
     });
     this.respawnButton.onInputDown.add(() => {
       if (this.player) {
-        if (this.player.isDie) {
-          this.player.respawn();
-          console.log('respawn')
-          this.closeDeadScene()
-        }
+        this.closeDeadScene()
+        this.player.isDie = false
+        this.player.alpha = 1
       }
     })
     this.deadscreen.fixedToCamera = true;
@@ -653,8 +651,8 @@ export default class extends Phaser.State {
       //////////////////////////
       // Send score to firebase
       this.game.database.ref('users/' + player.username).set({
-        "name": player.username,
-        "score": player.score
+        "name": player.username||"",
+        "score": player.score||0
       });
 
 

@@ -96,7 +96,7 @@ export default class extends Phaser.State {
         if (username.length > 0) {
             console.log('hello')
             this.game.database.ref('users/' + username).set({
-                "name": username,
+                "name": username||'',
                 "score": 0
             });
         }
