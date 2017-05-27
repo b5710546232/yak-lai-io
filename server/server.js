@@ -80,7 +80,7 @@ io.on('connection', function (socket) {
             randomPosition(area.minX, area.maxX),
             randomPosition(area.minY, area.maxY)
         );
-        // console.log('[NEW PLAYER] ID = ', user.id, ' Username = ', user.username, "PLAYER_INFO", snapshot.players[user.id]);
+        console.log('[NEW PLAYER] ID = ', user.id, ' Username = ', user.username, "PLAYER_INFO", snapshot.players[user.id]);
         //////////////////////////////////////////
     });
 
