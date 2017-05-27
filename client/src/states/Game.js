@@ -239,11 +239,8 @@ export default class extends Phaser.State {
         // }
         this.players[id].kill();
         delete this.players[id];
-<<<<<<< HEAD
-        this.world.resize(this.game.width, this.game.height)
-=======
->>>>>>> 580d3cf97eb78263a7dc0fa5c5cd680c2fbe598b
-        this.game.state.start('Login')
+        // this.world.resize(this.game.width, this.game.height)
+        // this.game.state.start('Login')
       });
       /////////////////////////////////////////////////////
 

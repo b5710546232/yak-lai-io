@@ -90,11 +90,11 @@ io.on('connection', function (socket) {
         // 2.
         /////////////////////////////////////////
         // Add new player to current snapshot
-        /////////////////////////////////////////
-        if(snapshot.players[user.id]) {
-            socket.emit('exist', true);
-        } else {
-            me = user;
+        // /////////////////////////////////////////
+        // me = user;
+        // if(snapshot.players[user.id]) {
+        //     socket.emit('exist', true);
+        // } else {
             snapshot.players[user.id] = new Player(
                 user.id,
                 user.username,
@@ -103,7 +103,7 @@ io.on('connection', function (socket) {
                 randomPosition(area.minY, area.maxY)
             );
             // console.log('[NEW PLAYER] ID = ', user.id, ' Username = ', user.username, "PLAYER_INFO", snapshot.players[user.id]);
-        }
+        // }
         //////////////////////////////////////////
 
         spawnCollectibles();
