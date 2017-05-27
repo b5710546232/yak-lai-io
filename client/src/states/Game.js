@@ -22,7 +22,7 @@ export default class extends Phaser.State {
     this.user_info = this.game.user_info
     console.log('user_info', this.user_info.uid)
   }
-  preload() { }
+  preload() {}
 
   create() {
     console.log(this.game.userName);
@@ -60,7 +60,10 @@ export default class extends Phaser.State {
 
     // virtual-joy
     this.game.virtualInput = this.add.plugin(phaserTouchControl)
-    this.game.virtualInput.configImage({ compass: 'compass', touch: 'touch' })
+    this.game.virtualInput.configImage({
+      compass: 'compass',
+      touch: 'touch'
+    })
     if (!this.game.device.desktop) {
       // this.game.virtualInput.inputEnable({ width: this.camera.width, side: 'LEFT' });
       this.game.shootButton = this.add.button(700, 300, 'touch_shoot');
@@ -126,7 +129,7 @@ export default class extends Phaser.State {
   setEventHandlers() {
 
     // let target = 'http://localhost:3000';
-    let target = 'http://192.168.1.3:3000';
+    let target = 'http://192.168.1.4:3000';
     // let target = 'http://128.199.253.181:3000/'
 
     this.socket = io.connect(target);
@@ -224,8 +227,7 @@ export default class extends Phaser.State {
           this.players[data.enemy_id].isAlive = false;
           this.players[data.enemy_id].x = 0;
           this.players[data.enemy_id].y = 0;
-        }
-        else if (this.player.id == data.enemy_id) {
+        } else if (this.player.id == data.enemy_id) {
           this.player.isAlive = false;
         }
       });
@@ -258,7 +260,7 @@ export default class extends Phaser.State {
           if (!this.players[current_player.id]) {
             // console.log("Is client player" , "from session ", this.socket.io.engine.id, "from server ", current_player.id );
             if (this.socket.io.engine.id == current_player.id) {
-            // if (this.user_info.uid == current_player.id) {
+              // if (this.user_info.uid == current_player.id) {
               console.log("[NEW] Client")
               let clientPlayer = new ClientPlayer({
                 game: this.game,
@@ -329,21 +331,32 @@ export default class extends Phaser.State {
             }
 
 
-              
+
             // Find horizontal direction
             updating_player.character.scale.x = (current_player.x > updating_player.x) ? 1 : -1;
 
             if (updating_player.alive && updating_player.exists && updating_player.visible && updating_player.isAlive) {
-              
-            let new_x = parseFloat(updating_player.x).toFixed(0);
-            let old_x = parseFloat(current_player.x).toFixed(0);
 
-            let new_y = parseFloat(updating_player.y).toFixed(0);
-            let old_y = parseFloat(current_player.y).toFixed(0);
+              let new_x = parseFloat(updating_player.x).toFixed(0);
+              let old_x = parseFloat(current_player.x).toFixed(0);
 
-              if(updating_player.alpha == 0) {
-                if (Math.abs(new_x - old_x) <= threshold && Math.abs(new_y - old_y) <= threshold) {
+              let new_y = parseFloat(updating_player.y).toFixed(0);
+              let old_y = parseFloat(current_player.y).toFixed(0);
+
+              if (updating_player.alpha == 0) {
+                let threshold_res = 50;
+                if (Math.abs(new_x - old_x) <= threshold_res && Math.abs(new_y - old_y) <= threshold_res) {
                   updating_player.alpha = 1;
+                  if (this.players[current_player.id].alpha == 1) {
+                    if( this.player.id == current_player.id){
+                        this.player.respawn()
+                    }
+                    this.players[current_player.id].isDie = false
+                  }
+
+                  if (current_player.id === this.player.id) {
+                    this.player.isAlive = true
+                  }
                 }
               }
 
@@ -369,6 +382,9 @@ export default class extends Phaser.State {
             if (currentPlayer.alive) {
               console.log(this.players[current_player.id].id, "died.");
               this.players[current_player.id].alpha = 0;
+              if (this.players[current_player.id].alpha === 0) {
+                this.players[current_player.id].isDie = true
+              }
             }
           }
           ///////////////////////////////////////////////////
@@ -377,12 +393,12 @@ export default class extends Phaser.State {
             if (currentPlayer.isAlive) {
               // if (!currentPlayer.visible && !currentPlayer.exists && !currentPlayer.alive) {
               // if(currentPlayer.alpha == 0) {
-                // this.game.remove(this.players[current_player.id]);
-                // this.players[current_player.id].x = current_player.x;
-                // this.players[current_player.id].y = current_player.y;
-                // this.players[current_player.id].revive();
-                // currentPlayer.alpha = 1;
-                // this.players[current_player.id].reset(current_player.x, current_player.y);
+              // this.game.remove(this.players[current_player.id]);
+              // this.players[current_player.id].x = current_player.x;
+              // this.players[current_player.id].y = current_player.y;
+              // this.players[current_player.id].revive();
+              // currentPlayer.alpha = 1;
+              // this.players[current_player.id].reset(current_player.x, current_player.y);
               // }
             }
           }
@@ -503,19 +519,23 @@ export default class extends Phaser.State {
 
     ////////////////////////////////////////
     // Favor client shot someone else
-    if (bullet.player_id == this.player.id) {
-      this.emitter.x = bullet.x
-      this.emitter.y = bullet.y
-      this.emitter.start(true, 1000, null, 10);
+    if (player.isAlive) {
 
-      console.log(bullet.player_id, "[HIT]", player.id);
-      let hitPlayerInfo = {
-        dealerId: this.player.id,
-        takerId: player.id
+
+      if (bullet.player_id == this.player.id) {
+        this.emitter.x = bullet.x
+        this.emitter.y = bullet.y
+        this.emitter.start(true, 1000, null, 10);
+
+        console.log(bullet.player_id, "[HIT]", player.id);
+        let hitPlayerInfo = {
+          dealerId: this.player.id,
+          takerId: player.id
+        }
+        this.socket.emit("hitPlayer", hitPlayerInfo);
       }
-      this.socket.emit("hitPlayer", hitPlayerInfo);
+      bullet.break();
     }
-    bullet.break();
     // //////////////////////////////////////
     // // Someone else shot someone else
     // else if( bullet.player_id !== this.player.id) {
@@ -540,7 +560,7 @@ export default class extends Phaser.State {
   }
 
   collectibleOverlapHandler(player, collectible) {
-    if (player.id == this.player.id) {
+    if (player && this.player && (player.id == this.player.id)) {
       console.log("Player collected ", collectible);
       let playerInfo = {
         id: this.player.id,

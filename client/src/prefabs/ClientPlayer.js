@@ -34,6 +34,9 @@ export default class ClientPlayer extends Phaser.Sprite {
         this.textname = this.game.make.text(0, 40, this.game.user_info.username);
         this.textname.fill = '#FFFFFF'
         this.textname.align = 'center'
+        this.textname.font = '16px Barrio'
+        this.textname.stroke = '#000000';
+        this.textname.strokeThickness = 3;
         this.textname.anchor.setTo(0.5)
         this.addChild(this.textname);
         // text.align = 'center';
@@ -161,7 +164,10 @@ export default class ClientPlayer extends Phaser.Sprite {
     handleInputs() {
 
 
-        let direction = { x: 0, y: 0 };
+        let direction = {
+            x: 0,
+            y: 0
+        };
         // Vertical
         if (this.cursors.up.isDown || this.upButton.isDown || this.game.virtualInput.cursors.up) {
             direction.y = -1;
@@ -243,15 +249,18 @@ export default class ClientPlayer extends Phaser.Sprite {
     }
 
     update() {
-        if (this.isAlive) {
+        if (this.isAlive && !this.isDie) {
             this.direction = this.handleInputs();
             if (this.game.input.activePointer.isDown && this.game.device.desktop) {
                 this.shoot();
             } else {
                 // handle for mobile
             }
-        } else {
-            this.respawn();
+        } 
+        else {
+            if(this.isDie){
+                this.respawn();
+            }
         }
 
         if (this.arms.animations.name == 'attack') {
@@ -286,11 +295,13 @@ export default class ClientPlayer extends Phaser.Sprite {
     }
 
     respawn() {
-        console.log('res-spawn')
         let playerInfo = {
             id: this.id
         };
-        this.socket.emit('respawn', playerInfo);
+        if(!this.isAlive){
+            this.socket.emit('respawn', playerInfo);
+            console.log('res-spawn')
+        }
         // if(this.respawnButton.isDown) {
         //     let playerInfo = {
         //         id: this.id
