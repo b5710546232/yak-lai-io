@@ -25,7 +25,7 @@ var colors = ['#999999', '#CCCCCC', '#00FF00', '#0000FF', '#FF0000', '#FFFF00'];
 var users = [];
 var particules = [];
 var INTERVAL = 100;``
-var COLLECTIBLES_SPAWN_AMOUNT = 100;
+var COLLECTIBLES_SPAWN_AMOUNT = 50;
 
 var snapshot = {
     players: [],
@@ -44,35 +44,52 @@ var randomPosition = (min, max) => {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
+var hasInitCollectible = false;
+
+var collectiblesAmount = 0;
+
 var spawnCollectibles = () => {
-    snapshot.collectibles.forEach(function(collectible) {
-        if(collectible.isCollected) {
+    // if(!hasInitCollectible) {
+        for(var i = 0; i < COLLECTIBLES_SPAWN_AMOUNT; i++) {
+            // console.log(i)
             let now = new Date();
-            collectible.id = now.getTime();
-            collectible.x = randomPosition(area.minX, TILE_WIDTH);
-            collectible.y = randomPosition(area.minY, TILE_HEIGHT);
-            collectible.isCollected = false; 
+            let collectible = {
+                id: now.getTime(),
+                x: randomPosition(area.minX, TILE_WIDTH),
+                y: randomPosition(area.minY, TILE_HEIGHT),
+                isCollected: false
+            };
+            snapshot.collectibles[collectible.id] = collectible;
+
         }
-    }, this);
+        let count = 0;
+
+        for(let collectible in snapshot.collectibles) {
+            console.log(++count);
+        }
+        
+        console.log("Total collectibles:", count);
+    //     hasInitCollectible = true;
+    // } else {
+    //     snapshot.collectibles.forEach(function(collectible) {
+    //         if(collectible.isCollected) {
+    //             let now = new Date();
+    //             collectible.id = now.getTime();
+    //             collectible.x = randomPosition(area.minX, TILE_WIDTH);
+    //             collectible.y = randomPosition(area.minY, TILE_HEIGHT);
+    //             collectible.isCollected = false; 
+    //         }
+    //     }, this);
+    // }
 }
 
-for(var i = 0; i < COLLECTIBLES_SPAWN_AMOUNT; i++) {
-    console.log(i)
-    let now = new Date();
-    let collectible = {
-        id: now.getTime(),
-        x: randomPosition(area.minX, TILE_WIDTH),
-        y: randomPosition(area.minY, TILE_HEIGHT),
-        isCollected: false
-    };
-    snapshot.collectibles[collectible.id] = collectible;
-}
 
 io.on('connection', function (socket) {
     // console.log("CONNECTION");
     var me = false;
 
     socket.on('new_player', function (user) {
+        
         // 1.
         ///////////////////////////////////////////////////////
         // Broadcast about this new player to other players
@@ -91,22 +108,23 @@ io.on('connection', function (socket) {
         /////////////////////////////////////////
         // Add new player to current snapshot
         // /////////////////////////////////////////
-        // me = user;
+        me = user;
         // if(snapshot.players[user.id]) {
         //     socket.emit('exist', true);
         // } else {
-            snapshot.players[user.id] = new Player(
-                user.id,
-                user.username,
-                colors[randomPosition(0, colors.length)],
-                randomPosition(area.minX, area.maxX),
-                randomPosition(area.minY, area.maxY)
-            );
+        snapshot.players[user.id] = new Player(
+            user.id,
+            user.username,
+            colors[randomPosition(0, colors.length)],
+            randomPosition(area.minX, area.maxX),
+            randomPosition(area.minY, area.maxY)
+        );
             // console.log('[NEW PLAYER] ID = ', user.id, ' Username = ', user.username, "PLAYER_INFO", snapshot.players[user.id]);
         // }
         //////////////////////////////////////////
 
-        spawnCollectibles();
+        // setTimeout(spawnCollectibles, 1000);
+        // spawnCollectibles();
     });
 
     // socket.on('update_particles', function (id) {
@@ -251,6 +269,18 @@ function randomIntInc(low, high) {
 }
 
 setInterval(() => {
+    if(collectiblesAmount < COLLECTIBLES_SPAWN_AMOUNT) {
+        let now = new Date();
+        let collectible = {
+            id: now.getTime(),
+            x: randomPosition(area.minX + 25, TILE_WIDTH),
+            y: randomPosition(area.minY + 25, TILE_HEIGHT),
+            isCollected: false
+        };
+        snapshot.collectibles[collectible.id] = collectible;
+        collectiblesAmount++;
+    }
+
     //////////////////////////////////////////
     // Update server snapshot
     //////////////////////////////////////////

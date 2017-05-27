@@ -9,7 +9,8 @@ export default class Player extends Phaser.Sprite {
         y,
         asset,
         id,
-        username
+        username,
+        score
     }) {
         super(game, x, y, 'blank_48x48')
         // this.game.add.sprite(x, y,this);
@@ -52,6 +53,9 @@ export default class Player extends Phaser.Sprite {
         this.arms.animations.play("idle");
         this.arms.smoothed = false;
         this.addChild(this.arms);
+
+        this.username = username;
+        this.score = score;
     }
     create() {
 

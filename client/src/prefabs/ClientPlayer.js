@@ -20,7 +20,8 @@ export default class ClientPlayer extends Phaser.Sprite {
         x,
         y,
         asset,
-        socket
+        socket,
+        score
     }) {
 
         super(game, x, y, 'blank_48x48')
@@ -110,6 +111,8 @@ export default class ClientPlayer extends Phaser.Sprite {
         };
 
         this.game.time.events.loop(Phaser.Timer.SECOND * 0.100, this.sendDirection, this);
+
+        this.score = score;
     }
     death() {
         this.x = Math.floor((Math.random() * 10) + 1)

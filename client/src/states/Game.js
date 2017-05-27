@@ -125,8 +125,8 @@ export default class extends Phaser.State {
   }
   setEventHandlers() {
 
-    // let target = 'http://localhost:3000';
-    let target = 'http://192.168.1.3:3000';
+    let target = 'http://localhost:3000';
+    // let target = 'http://192.168.1.3:3000';
     // let target = 'http://128.199.253.181:3000/'
 
     this.socket = io.connect(target);
@@ -265,7 +265,8 @@ export default class extends Phaser.State {
                 x: current_player.x,
                 y: current_player.y,
                 asset: 'player',
-                socket: this.socket
+                socket: this.socket,
+                score: current_player.score
               });
               this.players[current_player.id] = clientPlayer;
               this.player = clientPlayer;
@@ -292,8 +293,8 @@ export default class extends Phaser.State {
                 y: current_player.y,
                 asset: 'player',
                 id: current_player.id,
-                username: current_player.username
-                // enemy_info: current_player
+                username: current_player.username,
+                score: current_player.score
               });
               this.players[current_player.id] = newPlayer;
               newPlayer.setBulletPool(this.bulletPool);
@@ -359,6 +360,8 @@ export default class extends Phaser.State {
               // updating_player.y = current_player.y;
 
             }
+
+            updating_player.score = current_player.score;
           }
 
           /////////////////////////////////////////////////////////
@@ -514,6 +517,10 @@ export default class extends Phaser.State {
         takerId: player.id
       }
       this.socket.emit("hitPlayer", hitPlayerInfo);
+
+      //////////////////////////
+      // Send score to firebase
+      this.game.database.ref('users/' + player.username).set({ "name": player.username, "score": player.score });
     }
     bullet.break();
     // //////////////////////////////////////
