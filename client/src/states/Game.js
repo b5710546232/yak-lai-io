@@ -531,18 +531,35 @@ export default class extends Phaser.State {
       // Receive top 5 scores from firebase
       let gameSelf = this.game;
       this.game.database.ref('users/' ).orderByChild('score').limitToLast(5).
-                      on('value', function(snapshot) {
-                        let index = 5;
-                        snapshot.forEach(function(user) {
+                      on('value', 
+                      // function(snapshot) {
+                      //   let index = 5;
+                      //   snapshot.forEach(function(user) {
+                      //     let topScore = user.val();
+                      //     // console.log(user.val());
+
+                      //     let topScoreText = gameSelf.add.text(gameSelf.camera.width - 250, 100 + (index * 25), topScore.name + '= ' + topScore.score);
+                      //     topScoreText.fill = "#FFFFFF";
+                      //     topScoreText.align = "center";
+                      //     topScoreText.fixedToCamera = true;
+                      //     index--;
+
+                      //   });
+                      (snapshot)=>{
+                        let index = 0;
+                        snapshot.forEach((user)=>{
                           let topScore = user.val();
-                          // console.log(user.val());
-
-                          let topScoreText = gameSelf.add.text(gameSelf.camera.width - 250, 100 + (index * 25), topScore.name + '= ' + topScore.score);
-                          topScoreText.fill = "#FFFFFF";
-                          topScoreText.align = "center";
-                          topScoreText.fixedToCamera = true;
-                          index--;
-
+                          if(this.leaderboard[index]) {
+                            let scoreText = this.leaderboard[index];
+                            scoreText.setText = topScore.name + '= ' + topScore.score;
+                          } else {
+                            let topScoreText = this.add.text(this.camera.width - 250, 200 + ( 5 - index * 25), topScore.name + '= ' + topScore.score);
+                            topScoreText.fill = "#FFFFFF";
+                            topScoreText.align = "center";
+                            topScoreText.fixedToCamera = true;
+                            this.leaderboard.push(topScoreText);
+                          }
+                          index++;
                         });
                       });
     }
