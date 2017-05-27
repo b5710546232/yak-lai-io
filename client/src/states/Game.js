@@ -125,8 +125,8 @@ export default class extends Phaser.State {
   }
   setEventHandlers() {
 
-    // let target = 'http://localhost:3000'
-    let target = 'http://192.168.1.7:3000'
+    // let target = 'http://localhost:3000';
+    let target = 'http://192.168.1.7:3000';
     // let target = 'http://128.199.253.181:3000/'
 
     this.socket = io.connect(target);
@@ -165,8 +165,8 @@ export default class extends Phaser.State {
 
       // this.player.setBulletPool(this.bulletPool);
       let playerData = {
-        // id: this.socket.io.engine.id,
-        id: this.user_info.uid,
+        id: this.socket.io.engine.id,
+        // id: this.user_info.uid,
         username: this.user_info.username,
       };
 
@@ -239,7 +239,10 @@ export default class extends Phaser.State {
         // }
         this.players[id].kill();
         delete this.players[id];
+<<<<<<< HEAD
         this.world.resize(this.game.width, this.game.height)
+=======
+>>>>>>> 580d3cf97eb78263a7dc0fa5c5cd680c2fbe598b
         this.game.state.start('Login')
       });
       /////////////////////////////////////////////////////
@@ -257,8 +260,8 @@ export default class extends Phaser.State {
           // console.log("[ID]", snapshot.players[current_player].username);
           if (!this.players[current_player.id]) {
             // console.log("Is client player" , "from session ", this.socket.io.engine.id, "from server ", current_player.id );
-            // if (this.socket.io.engine.id == current_player.id) {
-            if (this.user_info.uid == current_player.id) {
+            if (this.socket.io.engine.id == current_player.id) {
+            // if (this.user_info.uid == current_player.id) {
               console.log("[NEW] Client")
               let clientPlayer = new ClientPlayer({
                 game: this.game,
@@ -348,7 +351,7 @@ export default class extends Phaser.State {
           let currentPlayer = this.players[current_player.id];
           currentPlayer.isAlive = current_player.isAlive;
           if (!currentPlayer.isAlive) {
-            if (currentPlayer.alive && currentPlayer.exists && currentPlayer.visible) {
+            if (currentPlayer.alive && currentPlayer.exists) {
               console.log(this.players[current_player.id].id, "died.");
               this.players[current_player.id].kill();
             }

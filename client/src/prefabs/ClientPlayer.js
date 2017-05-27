@@ -73,8 +73,8 @@ export default class ClientPlayer extends Phaser.Sprite {
 
         this.socket = socket
         this.current_cmd_action = CMD_ACTION
-        // this.id = socket.io.engine.id;
-        this.id = this.game.user_info.uid;
+        this.id = socket.io.engine.id;
+        // this.id = this.game.user_info.uid;
         this.anim_action = 'idle'
 
         this.anchor.setTo(0.5)
