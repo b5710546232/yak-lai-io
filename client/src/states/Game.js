@@ -18,8 +18,8 @@ import phaserTouchControl from '../plugins/vjoy'
 
 
 export default class extends Phaser.State {
-  init(user_info) {
-    this.user_info = user_info
+  init() {
+    this.user_info = this.game.user_info
     console.log('user_info', this.user_info.uid)
   }
   preload() { }
@@ -125,7 +125,8 @@ export default class extends Phaser.State {
   }
   setEventHandlers() {
 
-    let target = 'http://localhost:3000'
+    // let target = 'http://localhost:3000'
+    let target = 'http://192.168.1.7:3000'
     // let target = 'http://128.199.253.181:3000/'
 
     this.socket = io.connect(target);
@@ -238,6 +239,7 @@ export default class extends Phaser.State {
         // }
         this.players[id].kill();
         delete this.players[id];
+        this.game.state.start('Login',true,true)
       });
       /////////////////////////////////////////////////////
 
@@ -288,7 +290,8 @@ export default class extends Phaser.State {
                 x: current_player.x,
                 y: current_player.y,
                 asset: 'player',
-                id: current_player.id
+                id: current_player.id,
+                username:current_player.username
                 // enemy_info: current_player
               });
               this.players[current_player.id] = newPlayer;
@@ -410,7 +413,6 @@ export default class extends Phaser.State {
       ////////////////////////////////////////////////
       this.socket.on('disconnect', () => {
         console.log("[DISCONNECT] USER_2_SERVER");
-        this.game.state.start('Login')
       });
       ////////////////////////////////////////////////      
 
