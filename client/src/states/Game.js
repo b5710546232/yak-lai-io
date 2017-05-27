@@ -123,7 +123,6 @@ export default class extends Phaser.State {
     this.collectibles = [];
     this.collectibleGroup = this.game.add.group();
 
-
     this.deadscreen = this.add.image((game.width / 2) - 250, game.height / 2 - 200, 'dead_scene')
     this.respawnButton = this.add.button(game.width / 2 - 120, game.height / 2, 'continueBtn', () => {
 
@@ -155,13 +154,23 @@ export default class extends Phaser.State {
     this.scoreText.fixedToCamera = true;
 
 
+    // this.topScoreText = gameSelf.add.text(gameSelf.camera.width - 250, 100 + (index * 25), topScore.name + ' : ' + topScore.score);
+    this.topScoreText = this.game.add.text(this.game.camera.width - 250, 50, ' Top 5 Score');
+    this.topScoreText.fill = "#FFFFFF";
+    this.topScoreText.align = "center";
+    this.topScoreText.font = '10px Barrio'
+    this.topScoreText.stroke = '#000000';
+    this.topScoreText.strokeThickness = 2;
+    this.topScoreText.fixedToCamera = true;
+
+
   }
-  updateScore(newScore){
+  updateScore(newScore) {
     this.scoreText.setText(`Your score : ${newScore}`)
-      this.game.database.ref('users/' + this.user_info.username).set({
-                "name": this.user_info.username,
-                "score": parseInt(newScore)
-            });
+    this.game.database.ref('users/' + this.user_info.username).set({
+      "name": this.user_info.username,
+      "score": parseInt(newScore)
+    });
 
   }
   showDeadScene() {
@@ -171,6 +180,9 @@ export default class extends Phaser.State {
   closeDeadScene() {
     this.deadscreen.visible = false
     this.respawnButton.visible = false
+
+    this.leaderboard = [];
+
   }
 
   initBullets() {
@@ -184,9 +196,9 @@ export default class extends Phaser.State {
   }
   setEventHandlers() {
 
+
     // let target = 'http://localhost:3000';
     let target = 'http://192.168.1.4:3000';
-    // let target = 'http://128.199.253.181:3000/'
 
     this.socket = io.connect(target);
     this.socket.on('connect', () => {
@@ -312,9 +324,9 @@ export default class extends Phaser.State {
         for (let socket_id in snapshot.players) {
           // console.log(snapshot.players[socket_id]);
           let current_player = snapshot.players[socket_id];
-          if(this.player &&this.player.id === current_player.id){
-               this.updateScore(current_player.score||0)
-            
+          if (this.player && this.player.id === current_player.id) {
+            this.updateScore(current_player.score || 0)
+
           }
 
           // console.log("[ID]", snapshot.players[current_player].username);
@@ -328,7 +340,8 @@ export default class extends Phaser.State {
                 x: current_player.x,
                 y: current_player.y,
                 asset: 'player',
-                socket: this.socket
+                socket: this.socket,
+                score: current_player.score
               });
               this.players[current_player.id] = clientPlayer;
               this.player = clientPlayer;
@@ -345,7 +358,7 @@ export default class extends Phaser.State {
 
               // set camera follow player
               this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON)
-              
+
 
               clientPlayer.setBulletPool(this.bulletPool);
             } else {
@@ -356,8 +369,8 @@ export default class extends Phaser.State {
                 y: current_player.y,
                 asset: 'player',
                 id: current_player.id,
-                username: current_player.username
-                // enemy_info: current_player
+                username: current_player.username,
+                score: current_player.score
               });
               this.players[current_player.id] = newPlayer;
               newPlayer.setBulletPool(this.bulletPool);
@@ -369,7 +382,7 @@ export default class extends Phaser.State {
             let updating_player = this.players[current_player.id];
 
             // add animation
-           
+
             let new_x = parseFloat(updating_player.x).toFixed(0);
             let old_x = parseFloat(current_player.x).toFixed(0);
 
@@ -420,7 +433,7 @@ export default class extends Phaser.State {
                   }
                 }
               }
-              
+
               //////////////////////////////////////////
               // Tween with Linear interpolation
               let tween = this.game.add.tween(updating_player).to({
@@ -432,8 +445,17 @@ export default class extends Phaser.State {
               // updating_player.x = current_player.x;
               // updating_player.y = current_player.y;
 
-              
+
             }
+
+            // gua method update score
+            // updating_player.score = current_player.score;
+            // if (this.player && updating_player && this.player.id == updating_player.id) {
+            // updating_player.scoretext.setText("Your score: " + current_player.score);
+
+            // }
+
+
           }
 
           /////////////////////////////////////////////////////////
@@ -544,8 +566,8 @@ export default class extends Phaser.State {
 
 
   update() {
-    
-    
+
+
     // if (this.input.activePointer.position.x + this.camera.x >= this.camera.x + this.camera.width / 2 && this.game.virtualInput) {
     //   // shoot
     //   // this.game.virtualInput.inputDisable();
@@ -601,6 +623,38 @@ export default class extends Phaser.State {
         this.socket.emit("hitPlayer", hitPlayerInfo);
       }
       bullet.break();
+
+      //////////////////////////
+      // Send score to firebase
+      this.game.database.ref('users/' + player.username).set({
+        "name": player.username,
+        "score": player.score
+      });
+
+      ////////////////////////////
+      // Receive top 5 scores from firebase
+      let gameSelf = this.game;
+      this.game.database.ref('users/').orderByChild('score').limitToLast(5).
+      on('value', (snapshot) => {
+        let index = 5;
+        this.topScore = 'Top 5 Score \n'
+        snapshot.forEach((user) => {
+          let topScore = user.val();
+          // console.log(user.val());
+          this.topScore += topScore.name + ' : ' + topScore.score + "\n"
+          // this.topScoreText = gameSelf.add.text(gameSelf.camera.width - 250, 100 + (index * 25), topScore.name + ' : ' + topScore.score);
+          // this.topScoreText.fill = "#FFFFFF";
+          // this.topScoreText.align = "center";
+          // this.topScoreText.font = '10px Barrio'
+          // this.topScoreText.stroke = '#000000';
+          // this.topScoreText.strokeThickness = 2;
+          // this.topScoreText.fixedToCamera = true;
+
+          index--;
+
+        });
+        this.topScoreText.setText(this.topScore||'Top 5 Score')
+      });
     }
     // //////////////////////////////////////
     // // Someone else shot someone else
@@ -626,6 +680,7 @@ export default class extends Phaser.State {
   }
 
   collectibleOverlapHandler(player, collectible) {
+
     if (player && this.player && (player.id == this.player.id)) {
       console.log("Player collected ", collectible);
       let playerInfo = {
@@ -633,8 +688,8 @@ export default class extends Phaser.State {
         collectibleId: collectible.id
       };
       this.socket.emit('collect', playerInfo);
+      collectible.kill();
     }
-    collectible.kill();
   }
 
 }
