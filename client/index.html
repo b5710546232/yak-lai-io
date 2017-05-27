@@ -14,6 +14,20 @@
 <body>
 
     <div id="content"></div>
+    <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCH9137_dtf8L-cLOXo3razuESTw9WiA0c",
+            authDomain: "yak-lai.firebaseapp.com",
+            databaseURL: "https://yak-lai.firebaseio.com",
+            projectId: "yak-lai",
+            storageBucket: "yak-lai.appspot.com",
+            messagingSenderId: "550577644997"
+        };
+        firebase.initializeApp(config);
+
+    </script>
     <script src="dist/vendor.bundle.js"></script>
     <script src="dist/bundle.js"></script>
 
