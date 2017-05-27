@@ -20,10 +20,7 @@ export default class extends Phaser.State {
         //this.game.add.plugin(PhaserInput.Plugin);
     }
     create() {
-        this.menuBg = this.add.image(this.game.world.centerX, this.game.world.centerY, 'bg')
-
-
-
+        this.menuBg = this.add.image(game.width / 2 ,game.height / 2, 'bg')
         this.login_text = this.game.add.text(game.width / 2, 100, '', {
             font: '30px Barrio',
             fill: '#ffffff'
@@ -51,7 +48,7 @@ export default class extends Phaser.State {
         user.blockInput = false;
 
 
-        var submitBtn = this.add.button(this.world.centerX - 140, this.world.centerY + 100, 'btn', () => {
+        var submitBtn = this.add.button(game.width / 2 - 140, game.height / 2 + 100, 'btn', () => {
 
             this.game.userName = user.value;
             console.log(this.game.userName);
@@ -101,7 +98,9 @@ export default class extends Phaser.State {
                 this.game.current_user.username = username;
                 this.game.user_info = this.game.current_user
                 let user_info = this.game.current_user
-                this.game.state.start('Game', true, false, user_info);
+
+                // this.game.state.start('Game', true, false, user_info);                
+                this.game.state.start('Game')
                 return;
 
             }, (err) => {

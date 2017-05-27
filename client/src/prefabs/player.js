@@ -8,12 +8,22 @@ export default class Player extends Phaser.Sprite {
         x,
         y,
         asset,
-        id
+        id,
+        username
     }) {
         super(game, x, y, 'blank_48x48')
         // this.game.add.sprite(x, y,this);
         this.game.add.existing(this);
         // this.animations.play("down", 4, true);
+
+
+
+        this.textname = this.game.make.text(0, 40 , username);
+        this.textname.fill = '#FFFFFF'
+        this.textname.align = 'center'
+        this.textname.anchor.setTo(0.5)
+        this.addChild(this.textname);
+
         this.character = this.game.make.sprite(0, 0, asset)
         this.character.anchor.setTo(0.5)
 

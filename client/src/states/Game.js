@@ -18,8 +18,8 @@ import phaserTouchControl from '../plugins/vjoy'
 
 
 export default class extends Phaser.State {
-  init(user_info) {
-    this.user_info = user_info
+  init() {
+    this.user_info = this.game.user_info
     console.log('user_info', this.user_info.uid)
   }
   preload() { }
@@ -165,8 +165,8 @@ export default class extends Phaser.State {
 
       // this.player.setBulletPool(this.bulletPool);
       let playerData = {
-        // id: this.socket.io.engine.id,
-        id: this.user_info.uid,
+        id: this.socket.io.engine.id,
+        // id: this.user_info.uid,
         username: this.user_info.username,
       };
 
@@ -239,6 +239,7 @@ export default class extends Phaser.State {
         // }
         this.players[id].kill();
         delete this.players[id];
+        this.game.state.start('Login')
       });
       /////////////////////////////////////////////////////
 
@@ -255,8 +256,8 @@ export default class extends Phaser.State {
           // console.log("[ID]", snapshot.players[current_player].username);
           if (!this.players[current_player.id]) {
             // console.log("Is client player" , "from session ", this.socket.io.engine.id, "from server ", current_player.id );
-            // if (this.socket.io.engine.id == current_player.id) {
-            if (this.user_info.uid == current_player.id) {
+            if (this.socket.io.engine.id == current_player.id) {
+            // if (this.user_info.uid == current_player.id) {
               console.log("[NEW] Client")
               let clientPlayer = new ClientPlayer({
                 game: this.game,
@@ -289,7 +290,8 @@ export default class extends Phaser.State {
                 x: current_player.x,
                 y: current_player.y,
                 asset: 'player',
-                id: current_player.id
+                id: current_player.id,
+                username:current_player.username
                 // enemy_info: current_player
               });
               this.players[current_player.id] = newPlayer;
@@ -345,7 +347,7 @@ export default class extends Phaser.State {
           let currentPlayer = this.players[current_player.id];
           currentPlayer.isAlive = current_player.isAlive;
           if (!currentPlayer.isAlive) {
-            if (currentPlayer.alive && currentPlayer.exists && currentPlayer.visible) {
+            if (currentPlayer.alive && currentPlayer.exists) {
               console.log(this.players[current_player.id].id, "died.");
               this.players[current_player.id].kill();
             }
@@ -411,7 +413,6 @@ export default class extends Phaser.State {
       ////////////////////////////////////////////////
       this.socket.on('disconnect', () => {
         console.log("[DISCONNECT] USER_2_SERVER");
-        this.game.state.start('Login')
       });
       ////////////////////////////////////////////////      
 

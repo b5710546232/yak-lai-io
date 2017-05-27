@@ -188,7 +188,7 @@ io.on('connection', function (socket) {
     });
 
     socket.on('disconnect', function () {
-        console.log(me);
+        console.log("DISCONNECT", me);
         if (!me) {
             return false;
         }

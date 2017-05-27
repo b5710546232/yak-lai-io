@@ -31,6 +31,19 @@ export default class ClientPlayer extends Phaser.Sprite {
         this.game.add.existing(this);
         // this.animations.play("down", 4, true);
 
+        this.textname = this.game.make.text(0, 40, this.game.user_info.username);
+        this.textname.fill = '#FFFFFF'
+        this.textname.align = 'center'
+        this.textname.anchor.setTo(0.5)
+        this.addChild(this.textname);
+        // text.align = 'center';
+
+        // text.font = 'Arial Black';
+        // text.fontSize = 70;
+        // text.fontWeight = 'bold';
+        // text.fill = '#ec008c';
+
+
         this.character = this.game.make.sprite(0, 0, asset)
         this.character.anchor.setTo(0.5)
 
@@ -60,8 +73,8 @@ export default class ClientPlayer extends Phaser.Sprite {
 
         this.socket = socket
         this.current_cmd_action = CMD_ACTION
-        // this.id = socket.io.engine.id;
-        this.id = this.game.user_info.uid;
+        this.id = socket.io.engine.id;
+        // this.id = this.game.user_info.uid;
         this.anim_action = 'idle'
 
         this.anchor.setTo(0.5)
