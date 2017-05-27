@@ -40,7 +40,7 @@ export default class extends Phaser.State {
 
 
 
-    
+
 
     const bannerText = 'yak-lai'
     let banner = this.add.text(this.world.centerX, this.game.height - 80, bannerText)
@@ -65,22 +65,6 @@ export default class extends Phaser.State {
 
     this.groundLayer = this.map.createLayer('GroundLayer');
     this.wallLayer = this.map.createLayer('WallLayer');
-
-
-    // virtual-joy
-    this.game.virtualInput = this.add.plugin(phaserTouchControl)
-    this.game.virtualInput.configImage({
-      compass: 'compass',
-      touch: 'touch'
-    })
-    if (!this.game.device.desktop) {
-      // this.game.virtualInput.inputEnable({ width: this.camera.width, side: 'LEFT' });
-      this.game.shootButton = this.add.button(700, 350, 'touch_shoot');
-
-      this.game.shootButton.fixedToCamera = true;
-      this.game.virtualInput.inputEnable()
-    }
-
 
     //Change the world size to match the size of this layer
     this.groundLayer.resizeWorld();
@@ -166,7 +150,7 @@ export default class extends Phaser.State {
 
 
 
-      ////////////////////////////
+    ////////////////////////////
     // init  Receive top 5 scores from firebase
 
     this.game.database.ref('users/').orderByChild('score').limitToLast(5).
@@ -181,6 +165,23 @@ export default class extends Phaser.State {
       });
       this.topScoreText.setText(this.topScore || 'Top 5 Score')
     });
+
+
+
+    // virtual-joy
+    this.game.virtualInput = this.add.plugin(phaserTouchControl)
+    this.game.virtualInput.configImage({
+      compass: 'compass',
+      touch: 'touch'
+    })
+    if (!this.game.device.desktop) {
+      // this.game.virtualInput.inputEnable({ width: this.camera.width, side: 'LEFT' });
+      this.game.shootButton = this.add.button(700, 350, 'touch_shoot');
+
+      this.game.shootButton.fixedToCamera = true;
+      this.game.virtualInput.inputEnable()
+    }
+
 
 
   }
@@ -654,18 +655,18 @@ export default class extends Phaser.State {
       // });
 
 
-    this.game.database.ref('users/').orderByChild('score').limitToLast(5).
-    on('value', (snapshot) => {
-      let index = 5;
-      this.topScore = 'Top 5 Score \n'
-      snapshot.forEach((user) => {
-        let topScore = user.val();
-        this.topScore += topScore.name + ' : ' + topScore.score + "\n"
-        index--;
+      this.game.database.ref('users/').orderByChild('score').limitToLast(5).
+      on('value', (snapshot) => {
+        let index = 5;
+        this.topScore = 'Top 5 Score \n'
+        snapshot.forEach((user) => {
+          let topScore = user.val();
+          this.topScore += topScore.name + ' : ' + topScore.score + "\n"
+          index--;
 
+        });
+        this.topScoreText.setText(this.topScore || 'Top 5 Score')
       });
-      this.topScoreText.setText(this.topScore || 'Top 5 Score')
-    });
 
 
     }
