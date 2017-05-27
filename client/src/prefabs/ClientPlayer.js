@@ -114,7 +114,7 @@ export default class ClientPlayer extends Phaser.Sprite {
 
         this.score = score;
 
-        this.scoretext = this.game.add.text(this.game.camera.width - 50, 40, this.score);
+        this.scoretext = this.game.add.text(this.game.camera.width - 250, 40, "Your score: " + this.score);
         this.scoretext.fill = '#FFFFFF';
         this.scoretext.align = 'center';
         this.scoretext.fixedToCamera = true;

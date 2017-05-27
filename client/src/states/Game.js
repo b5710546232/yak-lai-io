@@ -112,6 +112,8 @@ export default class extends Phaser.State {
 
     this.collectibles = [];
     this.collectibleGroup = this.game.add.group();
+
+    this.leaderboard = [];
   }
 
   initBullets() {
@@ -363,7 +365,7 @@ export default class extends Phaser.State {
 
             updating_player.score = current_player.score;
             if(this.player.id == updating_player.id) {
-              updating_player.scoretext.setText(current_player.score);
+              updating_player.scoretext.setText("Your score: " +current_player.score);
             }
           }
 
@@ -527,10 +529,21 @@ export default class extends Phaser.State {
 
       ////////////////////////////
       // Receive top 5 scores from firebase
-      let topScores = this.game.database.ref('users/' ).orderByChild('score').limitToLast(1).
-                      once('value').then(function(snapshot) {
-                        console.log("Top 5 scores:", snapshot.val());
+      let gameSelf = this.game;
+      this.game.database.ref('users/' ).orderByChild('score').limitToLast(5).
+                      on('value', function(snapshot) {
+                        let index = 5;
+                        snapshot.forEach(function(user) {
+                          let topScore = user.val();
+                          // console.log(user.val());
 
+                          let topScoreText = gameSelf.add.text(gameSelf.camera.width - 250, 100 + (index * 25), topScore.name + '= ' + topScore.score);
+                          topScoreText.fill = "#FFFFFF";
+                          topScoreText.align = "center";
+                          topScoreText.fixedToCamera = true;
+                          index--;
+
+                        });
                       });
     }
     bullet.break();
@@ -558,15 +571,17 @@ export default class extends Phaser.State {
   }
 
   collectibleOverlapHandler(player, collectible) {
-    if (player.id == this.player.id) {
-      console.log("Player collected ", collectible);
-      let playerInfo = {
-        id: this.player.id,
-        collectibleId: collectible.id
-      };
-      this.socket.emit('collect', playerInfo);
+    if(player) {
+      if (player.id == this.player.id) {
+        console.log("Player collected ", collectible);
+        let playerInfo = {
+          id: this.player.id,
+          collectibleId: collectible.id
+        };
+        this.socket.emit('collect', playerInfo);
+      }
+      collectible.kill();
     }
-    collectible.kill();
   }
 
 }
