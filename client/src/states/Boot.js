@@ -8,7 +8,7 @@ export default class extends Phaser.State {
 
     //  this.game.input.maxPointers = 6;
     if (!this.game.device.desktop) {
-       this.game.input.maxPointers = 2;
+      this.game.input.maxPointers = 2;
       //   this.game.input.multiInputOverride = Phaser.Input.TOUCH_OVERRIDES_MOUSE;
       // this.game.input.addPointer();
       // this.game.input.addPointer();
@@ -32,12 +32,12 @@ export default class extends Phaser.State {
 
     // console.log('boot-parm',param);
     this.stage.backgroundColor = '#00000'
+    if (!this.game.device.desktop) {
+      this.game.scale.startFullScreen(false);
+    }
     // this.fontsReady = false
     // this.fontsLoaded = this.fontsLoaded.bind(this)
 
-    // if (!this.game.device.desktop) {
-    //   this.game.scale.startFullScreen(false);
-    // }
 
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.pageAlignHorizontally = true;

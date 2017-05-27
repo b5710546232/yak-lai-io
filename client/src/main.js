@@ -23,6 +23,7 @@ class Game extends Phaser.Game {
     // const height = docElement.clientHeight > config.gameHeight ? config.gameHeight : docElement.clientHeight
 
     super(width, height, Phaser.CANVAS, 'content', null)
+    // super(width, height, Phaser.CANVAS, null, null)
     // super({
     //   width: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
     //   height: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
@@ -45,7 +46,7 @@ class Game extends Phaser.Game {
 
 
     // start(key, clearWorld, clearCache, parameter)
-    this.state.start('Boot',false)
+    this.state.start('Boot')
   }
 
 }

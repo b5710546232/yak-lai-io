@@ -17,7 +17,9 @@ import Config from '../config'
 import phaserTouchControl from '../plugins/vjoy'
 
 
-import { centerGameObjects } from '../utils'
+import {
+  centerGameObjects
+} from '../utils'
 
 
 export default class extends Phaser.State {
@@ -28,7 +30,7 @@ export default class extends Phaser.State {
   preload() {}
 
   create() {
-      
+
 
     console.log(this.game.userName);
 
@@ -123,12 +125,52 @@ export default class extends Phaser.State {
 
 
     this.deadscreen = this.add.image((game.width / 2) - 250, game.height / 2 - 200, 'dead_scene')
-    this.respawnButton = this.add.button(game.width / 2 - 120, game.height / 2 , 'btn', () => {
-        
+    this.respawnButton = this.add.button(game.width / 2 - 120, game.height / 2, 'continueBtn', () => {
+
     });
+    this.respawnButton.onInputDown.add(() => {
+      if (this.player) {
+        if (this.player.isDie) {
+          this.player.respawn();
+          console.log('respawn')
+          this.closeDeadScene()
+        }
+      }
+    })
     this.deadscreen.fixedToCamera = true;
     this.respawnButton.fixedToCamera = true;
 
+    this.closeDeadScene()
+
+
+    this.score = 0
+    this.scoreStr = `score : ${this.score}`
+    this.scoreText = this.game.add.text(50, 50, this.scoreStr)
+    this.scoreText.fill = '#FFFFFF'
+    this.scoreText.align = 'center'
+    this.scoreText.font = '10px Barrio'
+    this.scoreText.stroke = '#000000';
+    this.scoreText.strokeThickness = 2;
+    // this.scoreText.anchor.setTo(0.5)
+    this.scoreText.fixedToCamera = true;
+
+
+  }
+  updateScore(newScore){
+    this.scoreText.setText(`Your score : ${newScore}`)
+      this.game.database.ref('users/' + this.user_info.username).set({
+                "name": this.user_info.username,
+                "score": parseInt(newScore)
+            });
+
+  }
+  showDeadScene() {
+    this.deadscreen.visible = true
+    this.respawnButton.visible = true
+  }
+  closeDeadScene() {
+    this.deadscreen.visible = false
+    this.respawnButton.visible = false
   }
 
   initBullets() {
@@ -143,7 +185,7 @@ export default class extends Phaser.State {
   setEventHandlers() {
 
     // let target = 'http://localhost:3000';
-    let target = 'http://192.168.1.4:3001';
+    let target = 'http://192.168.1.4:3000';
     // let target = 'http://128.199.253.181:3000/'
 
     this.socket = io.connect(target);
@@ -270,6 +312,11 @@ export default class extends Phaser.State {
         for (let socket_id in snapshot.players) {
           // console.log(snapshot.players[socket_id]);
           let current_player = snapshot.players[socket_id];
+          if(this.player &&this.player.id === current_player.id){
+               this.updateScore(current_player.score||0)
+            
+          }
+
           // console.log("[ID]", snapshot.players[current_player].username);
           if (!this.players[current_player.id]) {
             // console.log("Is client player" , "from session ", this.socket.io.engine.id, "from server ", current_player.id );
@@ -298,7 +345,7 @@ export default class extends Phaser.State {
 
               // set camera follow player
               this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON)
-
+              
 
               clientPlayer.setBulletPool(this.bulletPool);
             } else {
@@ -322,8 +369,7 @@ export default class extends Phaser.State {
             let updating_player = this.players[current_player.id];
 
             // add animation
-
-
+           
             let new_x = parseFloat(updating_player.x).toFixed(0);
             let old_x = parseFloat(current_player.x).toFixed(0);
 
@@ -363,8 +409,8 @@ export default class extends Phaser.State {
                 if (Math.abs(new_x - old_x) <= threshold_res && Math.abs(new_y - old_y) <= threshold_res) {
                   updating_player.alpha = 1;
                   if (this.players[current_player.id].alpha == 1) {
-                    if( this.player.id == current_player.id){
-                        this.player.respawn()
+                    if (this.player.id == current_player.id) {
+                      this.player.respawn()
                     }
                     this.players[current_player.id].isDie = false
                   }
@@ -374,7 +420,7 @@ export default class extends Phaser.State {
                   }
                 }
               }
-
+              
               //////////////////////////////////////////
               // Tween with Linear interpolation
               let tween = this.game.add.tween(updating_player).to({
@@ -386,6 +432,7 @@ export default class extends Phaser.State {
               // updating_player.x = current_player.x;
               // updating_player.y = current_player.y;
 
+              
             }
           }
 
@@ -399,6 +446,9 @@ export default class extends Phaser.State {
               this.players[current_player.id].alpha = 0;
               if (this.players[current_player.id].alpha === 0) {
                 this.players[current_player.id].isDie = true
+                if (this.player && this.players[current_player.id].id == this.player.id && this.player.isDie) {
+                  this.showDeadScene()
+                }
               }
             }
           }
@@ -494,7 +544,8 @@ export default class extends Phaser.State {
 
 
   update() {
-
+    
+    
     // if (this.input.activePointer.position.x + this.camera.x >= this.camera.x + this.camera.width / 2 && this.game.virtualInput) {
     //   // shoot
     //   // this.game.virtualInput.inputDisable();

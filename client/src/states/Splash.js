@@ -23,7 +23,7 @@ export default class extends Phaser.State {
     this.load.image('dead_scene', 'assets/images/dead_scene.png')
     
 
-    this.load.spritesheet('cont', 'asset/images/continue_button.png')
+    this.load.spritesheet('continueBtn', 'assets/images/continue_button.png')
     this.load.spritesheet('player', 'assets/sprites/player_sheet.png', 48, 48)
     this.load.spritesheet('yak_arm', 'assets/sprites/yak-arms.png', 48, 48)
     this.load.spritesheet('btn', 'assets/images/start_button.png');

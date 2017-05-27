@@ -34,9 +34,9 @@ export default class ClientPlayer extends Phaser.Sprite {
         this.textname = this.game.make.text(0, 40, this.game.user_info.username);
         this.textname.fill = '#FFFFFF'
         this.textname.align = 'center'
-        this.textname.font = '16px Barrio'
+        this.textname.font = '10px Barrio'
         this.textname.stroke = '#000000';
-        this.textname.strokeThickness = 3;
+        this.textname.strokeThickness = 2;
         this.textname.anchor.setTo(0.5)
         this.addChild(this.textname);
         // text.align = 'center';
@@ -257,9 +257,9 @@ export default class ClientPlayer extends Phaser.Sprite {
                 // handle for mobile
             }
         } else {
-            if (this.isDie) {
-                this.respawn();
-            }
+            // if (this.isDie) {
+            //     this.respawn();
+            // }
         }
 
         if (this.arms.animations.name == 'attack') {
