@@ -165,10 +165,13 @@ export default class extends Phaser.State {
   }
   updateScore(newScore) {
     this.scoreText.setText(`Your score : ${newScore}`)
-    this.game.database.ref('users/' + this.user_info.username).set({
-      "name": this.user_info.username,
-      "score": parseInt(newScore)
-    });
+    if (this.game.user_info.username) {
+      this.game.database.ref('users/' + this.game.user_info.username).set({
+        "name": this.user_info.username,
+        "score": parseInt(newScore)
+      });
+    }
+
 
   }
   showDeadScene() {
@@ -575,16 +578,7 @@ export default class extends Phaser.State {
       this.topScore = 'Top 5 Score \n'
       snapshot.forEach((user) => {
         let topScore = user.val();
-        // console.log(user.val());
         this.topScore += topScore.name + ' : ' + topScore.score + "\n"
-        // this.topScoreText = gameSelf.add.text(gameSelf.camera.width - 250, 100 + (index * 25), topScore.name + ' : ' + topScore.score);
-        // this.topScoreText.fill = "#FFFFFF";
-        // this.topScoreText.align = "center";
-        // this.topScoreText.font = '10px Barrio'
-        // this.topScoreText.stroke = '#000000';
-        // this.topScoreText.strokeThickness = 2;
-        // this.topScoreText.fixedToCamera = true;
-
         index--;
 
       });
@@ -651,8 +645,8 @@ export default class extends Phaser.State {
       //////////////////////////
       // Send score to firebase
       this.game.database.ref('users/' + player.username).set({
-        "name": player.username||"",
-        "score": player.score||0
+        "name": player.username || "",
+        "score": player.score || 0
       });
 
 
