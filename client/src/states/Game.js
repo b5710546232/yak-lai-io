@@ -25,7 +25,7 @@ export default class extends Phaser.State {
   preload() { }
 
   create() {
-      console.log(this.game.userName);
+    console.log(this.game.userName);
 
 
 
@@ -239,7 +239,8 @@ export default class extends Phaser.State {
         // }
         this.players[id].kill();
         delete this.players[id];
-        this.game.state.start('Login',true,true)
+        this.world.resize(this.game.width, this.game.height)
+        this.game.state.start('Login')
       });
       /////////////////////////////////////////////////////
 
@@ -291,7 +292,7 @@ export default class extends Phaser.State {
                 y: current_player.y,
                 asset: 'player',
                 id: current_player.id,
-                username:current_player.username
+                username: current_player.username
                 // enemy_info: current_player
               });
               this.players[current_player.id] = newPlayer;
@@ -383,7 +384,7 @@ export default class extends Phaser.State {
         // Handle collectibles
         for (let collectibleInfo in snapshot.collectibles) {
           let currentCollectible = snapshot.collectibles[collectibleInfo]
-          if(!this.collectibles[currentCollectible.id]) {
+          if (!this.collectibles[currentCollectible.id]) {
             let collectible = new Collectible({
               game: this,
               x: currentCollectible.x,
@@ -395,13 +396,13 @@ export default class extends Phaser.State {
             this.collectibles[collectible.id] = collectible;
             this.collectibleGroup.add(collectible);
             console.log(currentCollectible);
-          } 
+          }
           // else {
           //   let collectible = this.collectibles[currentCollectible.id];
           //   if(collectible.isCollected) {
           //     collectible.kill();
           //   }
-            
+
           // }
 
         }
@@ -518,7 +519,7 @@ export default class extends Phaser.State {
   }
 
   collectibleOverlapHandler(player, collectible) {
-    if(player.id == this.player.id) {
+    if (player.id == this.player.id) {
       console.log("Player collected ", collectible);
       let playerInfo = {
         id: this.player.id,

@@ -20,6 +20,7 @@ export default class extends Phaser.State {
         //this.game.add.plugin(PhaserInput.Plugin);
     }
     create() {
+        this.world.resize(game.width,game.height)
         this.menuBg = this.add.image(game.width / 2 ,game.height / 2, 'bg')
         this.login_text = this.game.add.text(game.width / 2, 100, '', {
             font: '30px Barrio',
