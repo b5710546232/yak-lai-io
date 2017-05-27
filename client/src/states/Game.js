@@ -126,7 +126,7 @@ export default class extends Phaser.State {
   setEventHandlers() {
 
     // let target = 'http://localhost:3000';
-    let target = 'http://192.168.1.7:3000';
+    let target = 'http://192.168.1.3:3000';
     // let target = 'http://128.199.253.181:3000/'
 
     this.socket = io.connect(target);
@@ -329,17 +329,35 @@ export default class extends Phaser.State {
             }
 
 
-            //////////////////////////////////////////
+              
             // Find horizontal direction
             updating_player.character.scale.x = (current_player.x > updating_player.x) ? 1 : -1;
 
-            if (updating_player.alive && updating_player.exists && updating_player.visible) {
+            if (updating_player.alive && updating_player.exists && updating_player.visible && updating_player.isAlive) {
+              
+            let new_x = parseFloat(updating_player.x).toFixed(0);
+            let old_x = parseFloat(current_player.x).toFixed(0);
+
+            let new_y = parseFloat(updating_player.y).toFixed(0);
+            let old_y = parseFloat(current_player.y).toFixed(0);
+
+              if(updating_player.alpha == 0) {
+                if (Math.abs(new_x - old_x) <= threshold && Math.abs(new_y - old_y) <= threshold) {
+                  updating_player.alpha = 1;
+                }
+              }
+
               //////////////////////////////////////////
               // Tween with Linear interpolation
-              this.game.add.tween(updating_player).to({
+              let tween = this.game.add.tween(updating_player).to({
                 x: [current_player.x],
                 y: [current_player.y],
               }, 200, null, true, 0, 0, false);
+
+              updating_player.tween = tween;
+              // updating_player.x = current_player.x;
+              // updating_player.y = current_player.y;
+
             }
           }
 
@@ -348,21 +366,24 @@ export default class extends Phaser.State {
           let currentPlayer = this.players[current_player.id];
           currentPlayer.isAlive = current_player.isAlive;
           if (!currentPlayer.isAlive) {
-            if (currentPlayer.alive && currentPlayer.exists) {
+            if (currentPlayer.alive) {
               console.log(this.players[current_player.id].id, "died.");
-              this.players[current_player.id].kill();
+              this.players[current_player.id].alpha = 0;
             }
           }
           ///////////////////////////////////////////////////
           // Respawn player is alive again
           else {
             if (currentPlayer.isAlive) {
-              if (!currentPlayer.alive && !currentPlayer.exists && !currentPlayer.visible) {
-                // this.players[current_player.id].revive();
+              // if (!currentPlayer.visible && !currentPlayer.exists && !currentPlayer.alive) {
+              // if(currentPlayer.alpha == 0) {
+                // this.game.remove(this.players[current_player.id]);
                 // this.players[current_player.id].x = current_player.x;
                 // this.players[current_player.id].y = current_player.y;
-                this.players[current_player.id].reset(current_player.x, current_player.y);
-              }
+                // this.players[current_player.id].revive();
+                // currentPlayer.alpha = 1;
+                // this.players[current_player.id].reset(current_player.x, current_player.y);
+              // }
             }
           }
 
