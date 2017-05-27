@@ -4,6 +4,7 @@ import Phaser from 'phaser'
 import Player from '../prefabs/player'
 import Enemy from '../prefabs/enemy'
 import ClientPlayer from '../prefabs/ClientPlayer'
+import Collectible from '../prefabs/collectible'
 
 import io from 'socket.io-client'
 
@@ -73,6 +74,9 @@ export default class extends Phaser.State {
     music.loop = true;
     music.play();
     music.volume = 0.1;
+
+    this.collectibles = [];
+    this.collectibleGroup = this.game.add.group();
   }
 
   initBullets() {
@@ -316,6 +320,33 @@ export default class extends Phaser.State {
             console.log('attack')
           }
         }
+
+        ///////////////////////////////////////////////////////////////////////////
+        // Handle collectibles
+        for (let collectibleInfo in snapshot.collectibles) {
+          let currentCollectible = snapshot.collectibles[collectibleInfo]
+          if(!this.collectibles[currentCollectible.id]) {
+            let collectible = new Collectible({
+              game: this,
+              x: currentCollectible.x,
+              y: currentCollectible.y,
+              id: currentCollectible.id,
+              asset: 'rock',
+              isCollected: currentCollectible.isCollected
+            });
+            this.collectibles[collectible.id] = collectible;
+            this.collectibleGroup.add(collectible);
+            console.log(currentCollectible);
+          } 
+          // else {
+          //   let collectible = this.collectibles[currentCollectible.id];
+          //   if(collectible.isCollected) {
+          //     collectible.kill();
+          //   }
+            
+          // }
+
+        }
       });
       //////////////////////////////////////////////////
 
@@ -354,9 +385,11 @@ export default class extends Phaser.State {
 
   update() {
 
-
+    // Player w/ bullet
     this.game.physics.arcade.overlap(this.playerGroup, this.bulletPool, this.clientBulletOverlapHandler, this.bulletProcessCallback, this);
 
+    // Player w/ collectible
+    this.game.physics.arcade.overlap(this.playerGroup, this.collectibleGroup, this.collectibleOverlapHandler, null, this);
 
   }
 
@@ -396,5 +429,16 @@ export default class extends Phaser.State {
 
   }
 
+  collectibleOverlapHandler(player, collectible) {
+    if(player.id == this.player.id) {
+      console.log("Player collected ", collectible);
+      let playerInfo = {
+        id: this.player.id,
+        collectibleId: collectible.id
+      };
+      this.socket.emit('collect', playerInfo);
+    }
+    collectible.kill();
+  }
 
 }

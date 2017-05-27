@@ -7,6 +7,11 @@ const PLAYER_STARTING_STATS = {
     EXP: 0
 };
 
+const SCORE_TYPES = {
+    KILL: 10,
+    COLLECT: 1
+}
+
 class Player {
 
     constructor(id, username, color, x, y) {
@@ -31,6 +36,18 @@ class Player {
         this.damage = PLAYER_STARTING_STATS.DAMAGE;
         this.score = PLAYER_STARTING_STATS.SCORE;
         this.exp = PLAYER_STARTING_STATS.EXP;
+    }
+
+    killPlayer() {
+        if(this.score) {
+            this.score += SCORE_TYPES.KILL;
+        }
+    }
+
+    collect() {
+        if(this.score) {
+            this.score += SCORE_TYPES.COLLECT;
+        }
     }
 
 }

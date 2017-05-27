@@ -23,13 +23,14 @@ app.use(function (req, res, next) {
 
 var colors = ['#999999', '#CCCCCC', '#00FF00', '#0000FF', '#FF0000', '#FFFF00'];
 var users = [];
-var nbParticule = 250;
 var particules = [];
-var INTERVAL = 100;
+var INTERVAL = 100;``
+var COLLECTIBLES_SPAWN_AMOUNT = 100;
 
 var snapshot = {
     players: [],
-    bullets: []
+    bullets: [],
+    collectibles: []
 };
 
 var area = {
@@ -39,15 +40,33 @@ var area = {
     maxY: 0,
 }
 
-// for (var i = 0; i < nbParticule; i++) {
-//     particules[i] = {
-//         x: randomIntInc(0, 3000),
-//         y: randomIntInc(0, 3000),
-//         color: color[randomIntInc(0, 5)],
-//         id: i,
-//         mass: 1
-//     };
-// }
+var randomPosition = (min, max) => {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
+var spawnCollectibles = () => {
+    snapshot.collectibles.forEach(function(collectible) {
+        if(collectible.isCollected) {
+            let now = new Date();
+            collectible.id = now.getTime();
+            collectible.x = randomPosition(area.minX, TILE_WIDTH);
+            collectible.y = randomPosition(area.minY, TILE_HEIGHT);
+            collectible.isCollected = false; 
+        }
+    }, this);
+}
+
+for(var i = 0; i < COLLECTIBLES_SPAWN_AMOUNT; i++) {
+    console.log(i)
+    let now = new Date();
+    let collectible = {
+        id: now.getTime(),
+        x: randomPosition(area.minX, TILE_WIDTH),
+        y: randomPosition(area.minY, TILE_HEIGHT),
+        isCollected: false
+    };
+    snapshot.collectibles[collectible.id] = collectible;
+}
 
 io.on('connection', function (socket) {
     // console.log("CONNECTION");
@@ -73,15 +92,21 @@ io.on('connection', function (socket) {
         /////////////////////////////////////////
         // Add new player to current snapshot
         /////////////////////////////////////////
-        snapshot.players[user.id] = new Player(
-            user.id,
-            user.username,
-            colors[randomPosition(0, colors.length)],
-            randomPosition(area.minX, area.maxX),
-            randomPosition(area.minY, area.maxY)
-        );
-        console.log('[NEW PLAYER] ID = ', user.id, ' Username = ', user.username, "PLAYER_INFO", snapshot.players[user.id]);
+        if(snapshot.players[user.id]) {
+            socket.emit('exist', true);
+        } else {
+            snapshot.players[user.id] = new Player(
+                user.id,
+                user.username,
+                colors[randomPosition(0, colors.length)],
+                randomPosition(area.minX, area.maxX),
+                randomPosition(area.minY, area.maxY)
+            );
+            // console.log('[NEW PLAYER] ID = ', user.id, ' Username = ', user.username, "PLAYER_INFO", snapshot.players[user.id]);
+        }
         //////////////////////////////////////////
+
+        spawnCollectibles();
     });
 
     // socket.on('update_particles', function (id) {
@@ -193,6 +218,9 @@ io.on('connection', function (socket) {
         if (dealer && taker) {
             taker.health -= dealer.damage;
             taker.isAlive = (taker.health <= 0) ? false : true;
+            if(!taker.isAlive) {
+                dealer.killPlayer();
+            }
         }
     });
 
@@ -201,6 +229,11 @@ io.on('connection', function (socket) {
         player.x = randomPosition(area.minX, area.maxX);
         player.y = randomPosition(area.minY, area.maxY);
         player.reset();
+    });
+
+    socket.on('collect', function (playerInfo) {
+        let player = snapshot.players[playerInfo.id];
+        player.collect();
     });
 
 });
@@ -220,13 +253,10 @@ setInterval(() => {
     // console.log("Broadcasting...", snapshot.players);
     let currentSnapshot = {
         players: Object.assign({}, snapshot.players),
-        bullets: Object.assign({}, snapshot.bullets)
+        bullets: Object.assign({}, snapshot.bullets),
+        collectibles: Object.assign({}, snapshot.collectibles)
     };
     snapshot.bullets.splice(0, snapshot.bullets.length);
     io.emit('update_snapshot', currentSnapshot);
     // io.emit('update_snapshot', snapshot);
 }, INTERVAL)
-
-var randomPosition = (min, max) => {
-    return Math.floor(Math.random() * (max - min) + min);
-}
