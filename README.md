@@ -5,6 +5,15 @@ That available for mobile and web base.
 
 ---
 
+## VIDEO trailer
+[Trailer](https://www.youtube.com/watch?v=YT6saFe37w8&feature=youtu.be)
+
+
+## Screenshot
+![Login](https://raw.githubusercontent.com/b5710546232/yak-lai-io/master/client/screenshots/ss0.png)
+
+![GamePlay](https://raw.githubusercontent.com/b5710546232/yak-lai-io/master/client/screenshots/ss1.png)
+
 ## How to play
     WSAD - to move up, down, left, or right
     Click or hold left mouse - to throw a rock
